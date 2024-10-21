@@ -1,4 +1,4 @@
-package io.github.alltheeb5t;
+package io.github.alltheeb5t.unisim;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;

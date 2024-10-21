@@ -4,36 +4,39 @@ buildscript {
     gradlePluginPortal()
   }
   dependencies {
+    classpath "io.github.fourlastor:construo:1.4.2"
     if(enableGraalNative == 'true') {
       classpath "org.graalvm.buildtools.native:org.graalvm.buildtools.native.gradle.plugin:0.9.28"
     }
   }
 }
 plugins {
-  id "io.github.fourlastor.construo" version "1.4.1"
   id "application"
 }
+apply plugin: 'io.github.fourlastor.construo'
 
 
 import io.github.fourlastor.construo.Target
 
 sourceSets.main.resources.srcDirs += [ rootProject.file('assets').path ]
-mainClassName = 'io.github.alltheeb5t.lwjgl3.Lwjgl3Launcher'
+mainClassName = 'io.github.alltheeb5t.unisim.lwjgl3.Lwjgl3Launcher'
 application.setMainClass(mainClassName)
 eclipse.project.name = appName + '-lwjgl3'
-java.sourceCompatibility = 11
-java.targetCompatibility = 11
+java.sourceCompatibility = 17
+java.targetCompatibility = 17
 if (JavaVersion.current().isJava9Compatible()) {
-        compileJava.options.release.set(11)
+        compileJava.options.release.set(17)
 }
 
 dependencies {
   implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
+  implementation "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
   implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
   implementation project(':core')
 
   if(enableGraalNative == 'true') {
     implementation "io.github.berstanio:gdx-svmhelper-backend-lwjgl3:$graalHelperVersion"
+      implementation "io.github.berstanio:gdx-svmhelper-extension-box2d:$graalHelperVersion"
     }
 
 }
@@ -86,7 +89,7 @@ construo {
         architecture.set(Target.Architecture.AARCH64)
         jdkUrl.set("https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.12%2B7/OpenJDK17U-jdk_aarch64_mac_hotspot_17.0.12_7.tar.gz")
         // macOS needs an identifier
-        identifier.set("io.github.alltheeb5t." + appName)
+        identifier.set("io.github.alltheeb5t.unisim." + appName)
         // Optional: icon for macOS
         macIcon.set(project.file("icons/logo.icns"))
       }
@@ -94,7 +97,7 @@ construo {
         architecture.set(Target.Architecture.X86_64)
         jdkUrl.set("https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.12%2B7/OpenJDK17U-jdk_x64_mac_hotspot_17.0.12_7.tar.gz")
         // macOS needs an identifier
-        identifier.set("io.github.alltheeb5t." + appName)
+        identifier.set("io.github.alltheeb5t.unisim." + appName)
         // Optional: icon for macOS
         macIcon.set(project.file("icons/logo.icns"))
       }
