@@ -5,12 +5,18 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 import io.github.alltheeb5t.unisim.map_objects.MapBuilding;
 
@@ -21,16 +27,44 @@ public class GameScreen extends ScreenAdapter {
     private OrthographicCamera camera;
     private SpriteBatch batch;
     private World world;
+    private Stage stage;
+    private Viewport viewport;
     private Box2DDebugRenderer box2dDebugRenderer;
     private MapBuilding testBuilding;
 
-    public GameScreen (OrthographicCamera camera) {
+    private DragAndDrop dragAndDrop;
+
+    public GameScreen (OrthographicCamera camera, Viewport viewport) {
         this.camera = camera;
+        this.viewport = viewport;
+
         batch = new SpriteBatch();
         world = new World(new Vector2(0, 0), false);
         box2dDebugRenderer = new Box2DDebugRenderer();
 
-        testBuilding = new MapBuilding(480, 100, 200, 50, world);
+        stage = new Stage(viewport);
+        dragAndDrop = new DragAndDrop();
+        testBuilding = new MapBuilding(480, 100, 120, world, new Texture("piazza.png"));
+        stage.addActor(testBuilding);
+        Gdx.input.setInputProcessor(stage);
+
+        dragAndDrop.addSource(new DragAndDrop.Source(testBuilding) {
+            @Override
+			public DragAndDrop.Payload dragStart(InputEvent inputEvent, float v, float v1, int i) {
+                System.out.println("Drag start");
+				DragAndDrop.Payload payload = new DragAndDrop.Payload();
+				payload.setDragActor(getActor());
+                stage.addActor(testBuilding);
+				dragAndDrop.setDragActorPosition(getActor().getWidth() / 2, -getActor().getHeight() / 2);
+
+				return payload;
+			}
+
+			@Override
+			public void dragStop(InputEvent event, float x, float y, int pointer, DragAndDrop.Payload payload, DragAndDrop.Target target) {
+				System.out.println("Drag stop");
+			}
+        });
     }
 
     @Override
@@ -43,10 +77,11 @@ public class GameScreen extends ScreenAdapter {
 
         batch.begin();
         batch.setProjectionMatrix(camera.combined);
-        testBuilding.render(batch);
-        System.out.println(camera.view);
+        //testBuilding.render(batch);
+        //System.out.println(camera.view);
         batch.end();
         box2dDebugRenderer.render(world, camera.combined.scl(1));
+        stage.draw();
 
     }
 
