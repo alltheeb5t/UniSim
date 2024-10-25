@@ -16,10 +16,20 @@ public class MapBuilding extends Image {
     protected Body body;
     protected Texture buildingTexture;
 
+    /**
+     * Generates a new body object. 
+     * Method taken from this (https://www.youtube.com/watch?v=6QKhSctuMcs) helpful tutorial by 'Small Pixel Games' on YouTube
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     * @param isStatic
+     * @param world
+     * @return
+     */
     public static Body createBody(float x, float y, float width, float height, boolean isStatic, World world) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = isStatic ? BodyDef.BodyType.StaticBody : BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(x, y);
         bodyDef.fixedRotation = true;
         Body body = world.createBody(bodyDef);
 
@@ -33,25 +43,45 @@ public class MapBuilding extends Image {
         return body;
     }
 
+    /**
+     * Constructor allowing specification of arbitrary width and height parameters.
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     * @param world
+     * @param texture
+     */
     public MapBuilding(float x, float y, float width, float height, World world, Texture texture) {
         super(texture);
-        setSize(width,height);
-        setPosition(x-width/2, y-height/2);
+        
         body = createBody(x, y, width, height, false, world);
         this.width = width;
         this.height = height;
+
+        setSize(width,height);
+        setPosition(x-width/2, y-height/2);  
     }
 
+    /**
+     * Constructor uses the ratio of the image file to define height
+     * @param x
+     * @param y
+     * @param width
+     * @param world
+     * @param texture
+     */
     public MapBuilding(float x, float y, float width, World world, Texture texture) {
         this(x, y, width, width/(texture.getWidth()/texture.getHeight()), world, texture);
     }
 
+    /**
+     * Called internally by the drag handler. Overridden method moves Box2D Body to same position
+     */
     @Override
-    public void setX(float x) {
-        super.setX(x);
-    }
-
-    public Body getBody() {
-        return body;
+    public void setPosition(float x, float y) {
+        super.setPosition(x, y);
+        body.setTransform(x+width/2, y+height/2, 0);
+        System.out.println("Debug X: "+x+" Y: "+y);
     }
 }

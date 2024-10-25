@@ -9,18 +9,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import io.github.alltheeb5t.unisim.map_objects.MapBuilding;
-
-import io.github.alltheeb5t.unisim.Constants;
 
 public class GameScreen extends ScreenAdapter {
 
@@ -41,18 +37,19 @@ public class GameScreen extends ScreenAdapter {
         batch = new SpriteBatch();
         world = new World(new Vector2(0, 0), false);
         box2dDebugRenderer = new Box2DDebugRenderer();
-
         stage = new Stage(viewport);
         dragAndDrop = new DragAndDrop();
-        testBuilding = new MapBuilding(480, 100, 120, world, new Texture("piazza.png"));
-        stage.addActor(testBuilding);
         Gdx.input.setInputProcessor(stage);
 
+        // Testing only: Add temporary building
+        testBuilding = new MapBuilding(480, 100, 120, world, new Texture("piazza.png"));
+        stage.addActor(testBuilding);
+
+        // Drag and drop listener for test building
         dragAndDrop.addSource(new DragAndDrop.Source(testBuilding) {
             @Override
 			public DragAndDrop.Payload dragStart(InputEvent inputEvent, float v, float v1, int i) {
-                System.out.println("Drag start");
-				DragAndDrop.Payload payload = new DragAndDrop.Payload();
+                DragAndDrop.Payload payload = new DragAndDrop.Payload();
 				payload.setDragActor(getActor());
                 stage.addActor(testBuilding);
 				dragAndDrop.setDragActorPosition(getActor().getWidth() / 2, -getActor().getHeight() / 2);
@@ -70,22 +67,23 @@ public class GameScreen extends ScreenAdapter {
     @Override
     public void render(float delta) {
         handleInput();
-        camera.update();
 
         Gdx.gl.glClearColor(118/255f,184/255f, 135/255f,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
         batch.setProjectionMatrix(camera.combined);
-        //testBuilding.render(batch);
-        //System.out.println(camera.view);
+        // This is where we would render any static objects
         batch.end();
+
         box2dDebugRenderer.render(world, camera.combined.scl(1));
         stage.draw();
 
     }
 
-    /**java */
+    /** 
+     * Handles inputs related to zoom. Called exclusively by the render method.
+     */
     private void handleInput() {
 		if (Gdx.input.isKeyPressed(Input.Keys.A)) {
 			camera.zoom += 0.02;
@@ -107,18 +105,20 @@ public class GameScreen extends ScreenAdapter {
 		}
 
         // Minimum zoom is the entire viewport filling the screen and the maximum is an arbitrary 0.1 (On a 1080p monitor this would be ~98m)
-		camera.zoom = MathUtils.clamp(camera.zoom, 0.1f, Constants.CAMPUS_MAX_X/camera.viewportWidth);
+		camera.zoom = MathUtils.clamp(camera.zoom, 0.1f, Math.min(Constants.CAMPUS_MAX_X/camera.viewportWidth, Constants.CAMPUS_MAX_Y/camera.viewportHeight));
 
 		float effectiveViewportWidth = camera.viewportWidth * camera.zoom;
 		float effectiveViewportHeight = camera.viewportHeight * camera.zoom;
 
         // Ensure that the camera's viewport never goes beyond the edge of the map
-		camera.position.x = MathUtils.clamp(camera.position.x, effectiveViewportWidth / 2f, Constants.CAMPUS_MAX_X - effectiveViewportWidth / 2f);
-		camera.position.y = MathUtils.clamp(camera.position.y, effectiveViewportHeight / 2f, Constants.CAMPUS_MAX_Y - effectiveViewportHeight / 2f);
+        camera.position.x = MathUtils.clamp(camera.position.x, effectiveViewportWidth / 2f, Constants.CAMPUS_MAX_X - effectiveViewportWidth / 2f);
+        camera.position.y = MathUtils.clamp(camera.position.y, effectiveViewportHeight / 2f, Constants.CAMPUS_MAX_Y - effectiveViewportHeight / 2f);
+		
 	}
 
     @Override
     public void resize(int width, int height) {
+        stage.getViewport().update(width, height);
         camera.viewportWidth = width;
         camera.viewportHeight = height;
         camera.update();
