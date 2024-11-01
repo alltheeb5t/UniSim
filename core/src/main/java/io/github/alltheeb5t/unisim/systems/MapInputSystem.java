@@ -2,7 +2,6 @@ package io.github.alltheeb5t.unisim.systems;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
@@ -10,35 +9,32 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 
+import io.github.alltheeb5t.unisim.CampusMap;
 import io.github.alltheeb5t.unisim.Constants;
-import io.github.alltheeb5t.unisim.map_objects.MapBuilding;
+import io.github.alltheeb5t.unisim.map_objects.MapObstruction;
 
-public class MapInputSystem implements InputProcessor{
-
-    private OrthographicCamera camera;
-    private Stage stage;
-    private DragAndDrop dragAndDrop;
-
-    public MapInputSystem(OrthographicCamera camera, Stage stage) {
-        this.camera = camera;
-        this.stage = stage;
-        this.dragAndDrop = new DragAndDrop();
-    }
+public class MapInputSystem {
 
     // ─── Building Movement ───────────────────────────────────────────────
 
-    public void registerDraggableBuilding(MapBuilding building) {
+    public static void registerDraggableObstruction(DragAndDrop dragAndDrop, Stage stage, MapObstruction obstruction) {
         // Drag and drop listener for test building
-        dragAndDrop.addSource(new DragAndDrop.Source(building) {
+        dragAndDrop.addSource(new DragAndDrop.Source(obstruction.getImageObject()) {
             @Override
 			public DragAndDrop.Payload dragStart(InputEvent inputEvent, float v, float v1, int i) {
                 DragAndDrop.Payload payload = new DragAndDrop.Payload();
 				payload.setDragActor(getActor());
-                stage.addActor(building);
+                stage.addActor(obstruction.getImageObject());
 				dragAndDrop.setDragActorPosition(getActor().getWidth() / 2, -getActor().getHeight() / 2); // Move image so the cursor is in the centre of the object during dragging
 
 				return payload;
 			}
+
+            @Override
+            public void drag(InputEvent event, float x, float y, int pointer) {
+                super.drag(event, x, y, pointer);
+                BuildingSystem.syncBodyPosition(obstruction);
+            }
 
 			@Override
 			public void dragStop(InputEvent event, float x, float y, int pointer, DragAndDrop.Payload payload, DragAndDrop.Target target) {
@@ -47,18 +43,12 @@ public class MapInputSystem implements InputProcessor{
         });
     }
 
-
-    // ─── Map Pan And Zoom ────────────────────────────────────────────────
-
-    // Used by to track how much the cursor has moved between two 'touchDragged' events.
-    // The camera is then translated by this.
-    private int panStartX;
-    private int panStartY;
+    // ─── Map Pan And Zoom Handling ───────────────────────────────────────
 
     /** 
      * Moves the camera by a set amount but prevents going beyond map boundaries
      */
-    private void clampedTranslate(float x, float y) {
+    private static void clampedTranslate(float x, float y, OrthographicCamera camera) {
         camera.position.x += x;
         camera.position.y += y;
 
@@ -71,96 +61,69 @@ public class MapInputSystem implements InputProcessor{
 		
 	}
 
-    public void resize(int width, int height) {
-        stage.getViewport().update(width, height);
-        camera.viewportWidth = width;
-        camera.viewportHeight = height;
-        camera.update();
-    }
-    
-    @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        return false;
+    /**
+     * Called whenever the game window is resized
+     * @param width
+     * @param height
+     * @param campusMap
+     */
+    public static void gameScreenResize(int width, int height, CampusMap campusMap) {
+        campusMap.getStage().getViewport().update(width, height);
+        campusMap.getCamera().viewportWidth = width;
+        campusMap.getCamera().viewportHeight = height;
+        campusMap.getCamera().update();
     }
 
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        panStartX = screenX;
-        panStartY = screenY;
-        return stage.touchDown(screenX, screenY, pointer, button);
+    public static boolean gameScreenTouchDown(int screenX, int screenY, int pointer, int button, CampusMap campusMap) {
+        campusMap.setLastTouch(screenX, screenY);
+        return campusMap.getStage().touchDown(screenX, screenY, pointer, button);
+    }
+
+    public static boolean gameScreenTouchUp(int screenX, int screenY, int pointer, int button, CampusMap campusMap) {
+        return campusMap.getStage().touchUp(screenX, screenY, pointer, button);
     }
 
     /**
-     * Implemented from InputProcessor. Used to handle panning if middle click is pressed
-     * @param screenX Pointer X coordinate
-     * @param screenY Pointer Y coordinate
-     * @param pointer Think this is always 0 for a mouse.
+     * Called whenever the position of the user's mouse changes slightly. Moves map if the middle mouse button is pressed
+     * @param screenX
+     * @param screenY
+     * @param pointer
+     * @param campusMap
      * @return
      */
-    @Override
-    public boolean touchDragged (int screenX, int screenY, int pointer) {
+    public static boolean gameScreenDrag(int screenX, int screenY, int pointer, CampusMap campusMap) {
         if (Gdx.input.isButtonPressed(Input.Buttons.MIDDLE))  {
-            clampedTranslate((panStartX-screenX), -(panStartY-screenY));
-            panStartX = screenX;
-            panStartY = screenY;
+            clampedTranslate((campusMap.getLastTouchX()-screenX), -(campusMap.getLastTouchY()-screenY), campusMap.getCamera());
+            campusMap.setLastTouch(screenX, screenY);
         }
         
         // Input handler would ordinarily be set to the stage. Now we've finished, pass input events to stage.
-        return stage.touchDragged(screenX, screenY, pointer);
+        return campusMap.getStage().touchDragged(screenX, screenY, pointer);
     }
-
-    @Override
-    public boolean touchUp (int screenX, int screenY, int pointer, int button) {
-        return stage.touchUp(screenX, screenY, pointer, button);
-    }
-
-	@Override public boolean keyDown (int keycode) {
-		return false;
-	}
-
-	@Override public boolean keyUp (int keycode) {
-		return false;
-	}
-
-	@Override public boolean keyTyped (char character) {
-		return false;
-	}
 
     /**
-     * Implemented from InputProcessor, used to control Zoom.
-     * @param amountX Arbitrary value representing how far the window should move.
-     * @param amountY Would be horizontal scrolling. Not used.
+     * Used to handle zooming in and out in response to mouse wheel scroll
+     * @param scrollAmount Magnitude of scroll on y-Axis
+     * @param campusMap
      * @return
      */
-	@Override public boolean scrolled (float amountX, float amountY) {
+    public static boolean gameScreenScroll(float scrollAmount, CampusMap campusMap) {
         // We find the in-game coordinates of the cursor initially
-        Vector3 cursorPosMeters = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
-        camera.zoom += amountY/10;
+        Vector3 cursorPosMeters = campusMap.getCamera().unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+        campusMap.getCamera().zoom += scrollAmount/10;
 
         // Minimum zoom is the entire viewport filling the screen and the maximum is an arbitrary 0.1 (On a 1080p monitor this would be ~98m)
-		camera.zoom = MathUtils.clamp(camera.zoom, 0.1f, Math.min(Constants.CAMPUS_MAX_X/camera.viewportWidth, Constants.CAMPUS_MAX_Y/camera.viewportHeight));
+		campusMap.getCamera().zoom = MathUtils.clamp(campusMap.getCamera().zoom, 0.1f, Math.min(Constants.CAMPUS_MAX_X/campusMap.getCamera().viewportWidth,
+                                                                                                    Constants.CAMPUS_MAX_Y/campusMap.getCamera().viewportHeight));
 
-        camera.update();
+        campusMap.getCamera().update();
 
         // Get the in-game coordinates of the cursor now the zoom has been executed
-        Vector3 newCursorPosMeters = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+        Vector3 newCursorPosMeters = campusMap.getCamera().unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
         
         // To make zoom natural, whatever is directly under the cursor should stay in the same place
-        clampedTranslate(cursorPosMeters.x-newCursorPosMeters.x,cursorPosMeters.y-newCursorPosMeters.y);
-        camera.update();
+        clampedTranslate(cursorPosMeters.x-newCursorPosMeters.x,cursorPosMeters.y-newCursorPosMeters.y, campusMap.getCamera());
+        campusMap.getCamera().update();
 		return true;
-	}
-
-    /**
-     * Implemented as is necessary for a full implementation of InputProcessor. Not relevant on desktop
-     * @param screenX
-     * @param screenY
-     * @param point
-     * @param button
-     * @return
-     */
-    @Override
-    public boolean touchCancelled(int screenX, int screenY, int pointer, int button) {
-        return false;
     }
 }

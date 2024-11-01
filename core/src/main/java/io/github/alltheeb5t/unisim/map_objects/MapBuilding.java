@@ -1,14 +1,16 @@
 package io.github.alltheeb5t.unisim.map_objects;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.physics.box2d.World;
+/**
+ * Represents a special type of map obstruction which has additional properties like cost etc.
+ */
+public class MapBuilding {
+    MapObstruction myObstructionFootprint;
 
-public class MapBuilding extends MapObstruction {
-    public MapBuilding(float x, float y, float width, float height, World world, Texture texture) {
-        super(x, y, width, height, world, texture);
+    public MapBuilding(MapObstruction myObstructionFootprint) {
+        this.myObstructionFootprint = myObstructionFootprint;
     }
 
-    public MapBuilding(float x, float y, float width, World world, Texture texture) {
-        super(x, y, width, world, texture);
+    public MapObstruction geMapObstruction() {
+        return myObstructionFootprint;
     }
 }

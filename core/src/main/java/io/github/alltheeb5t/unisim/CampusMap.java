@@ -1,37 +1,55 @@
 package io.github.alltheeb5t.unisim;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 
-import io.github.alltheeb5t.unisim.map_objects.MapBuilding;
-import io.github.alltheeb5t.unisim.systems.MapInputSystem;
-
+/**
+ * Used to store key libgdx rendering-related objects.
+ */
 public class CampusMap {
-    private MapInputSystem mapInputSystem;
-
     private OrthographicCamera camera;
     private Stage stage;
     private World world;
+    private DragAndDrop dragAndDrop;
 
-    private MapBuilding testBuilding;
+    // Used by drag routines to determine how much the pointer has moved since the routine last ran. Objects can then be translated accordingly
+    private int lastTouchX, lastTouchY;
 
-    public CampusMap(OrthographicCamera camera, Stage stage, World world) {
+    public CampusMap(OrthographicCamera camera, Stage stage, World world, DragAndDrop dragAndDrop) {
         this.camera = camera;
         this.stage = stage;
         this.world = world;
-
-        mapInputSystem = new MapInputSystem(camera, stage);
-
-        // Testing only: Add temporary building
-        testBuilding = new MapBuilding(480, 100, 120, world, new Texture("piazza.png"));
-        stage.addActor(testBuilding);
-
-        mapInputSystem.registerDraggableBuilding(testBuilding);
+        this.dragAndDrop = dragAndDrop;
     }
 
-    public MapInputSystem getInputSystem() {
-        return mapInputSystem;
+    public Stage getStage() {
+        return stage;
+    }
+
+    public OrthographicCamera getCamera() {
+        return camera;
+    }
+
+    public World getWorld() {
+        return world;
+    }
+
+    public DragAndDrop getDragAndDrop() {
+        return dragAndDrop;
+    }
+
+    public int getLastTouchX() {
+        return lastTouchX;
+    }
+
+    public int getLastTouchY() {
+        return lastTouchY;
+    }
+
+    public void setLastTouch(int x, int y) {
+        lastTouchX = x;
+        lastTouchY = y;
     }
 }
