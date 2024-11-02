@@ -6,6 +6,9 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 import io.github.alltheeb5t.unisim.CampusMap;
+import io.github.alltheeb5t.unisim.building_components.SatisfactionComponent;
+import io.github.alltheeb5t.unisim.building_components.StructureNameComponent;
+import io.github.alltheeb5t.unisim.building_components.StructureTypeComponent;
 import io.github.alltheeb5t.unisim.map_objects.MapBuilding;
 import io.github.alltheeb5t.unisim.map_objects.MapObstruction;
 import io.github.alltheeb5t.unisim.systems.BuildingSystem;
@@ -47,7 +50,7 @@ public class MapObstructionFactory {
      * @return
      */
     public static MapObstruction makeMapObstruction(float x, float y, float width, World world, Texture texture) {
-        return makeMapObstruction(x, y, width, width/(texture.getWidth()/texture.getHeight()), world, texture);
+        return makeMapObstruction(x, y, width, width/(1.0f*texture.getWidth()/texture.getHeight()), world, texture);
     }
     
     /**
@@ -56,9 +59,28 @@ public class MapObstructionFactory {
      * @param campusMap
      * @return
      */
-    public static MapBuilding makeMapBuilding(MapObstruction mapObstructionFootprint, CampusMap campusMap) {
+    public static MapBuilding makeMapBuilding(float x, float y, StructureTypeComponent type, SatisfactionComponent satisfaction, CampusMap campusMap) {
+        
+        StructureNameComponent newBuildingName;
+        MapObstruction mapObstructionFootprint;
+
+        switch (type) {
+            case CATERING:
+                newBuildingName = new StructureNameComponent("Piazza");
+                mapObstructionFootprint = makeMapObstruction(x, y, 120, campusMap.getWorld(), new Texture("piazza.png"));
+                break;
+            case ACCOMMODATION:
+                newBuildingName = new StructureNameComponent("John West Taylor Court");
+                mapObstructionFootprint = makeMapObstruction(x, y, 60, campusMap.getWorld(), new Texture("john_west_taylor_court.png"));
+                break;
+            default:
+                newBuildingName = new StructureNameComponent("Piazza");
+                mapObstructionFootprint = makeMapObstruction(x, y, 120, campusMap.getWorld(), new Texture("piazza.png"));
+        }
+        
         campusMap.getStage().addActor(mapObstructionFootprint.getImageObject());
         MapInputSystem.registerDraggableObstruction(campusMap.getDragAndDrop(), campusMap.getStage(), mapObstructionFootprint);
-        return new MapBuilding(mapObstructionFootprint);
+
+        return new MapBuilding(mapObstructionFootprint, newBuildingName, type, satisfaction);
     }
 }
