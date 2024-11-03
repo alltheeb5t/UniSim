@@ -1,34 +1,28 @@
 package io.github.alltheeb5t.unisim;
 
-import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
+
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
-public class Main extends ApplicationAdapter {
-    private SpriteBatch batch;
-    private Texture image;
+public class Main extends Game {
+    private OrthographicCamera orthographicCamera;
+    private Viewport viewport;
+    private int screenWidth, screenHeight;
 
     @Override
     public void create() {
-        batch = new SpriteBatch();
-        image = new Texture("libgdx.png");
-    }
+        screenWidth = Gdx.graphics.getWidth();
+        screenHeight = Gdx.graphics.getHeight();
+        orthographicCamera = new OrthographicCamera();
 
-    @Override
-    public void render() {
-        ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
-        batch.begin();
-        batch.draw(image, 140, 210);
-        batch.end();
-    }
-
-    @Override
-    public void dispose() {
-        batch.dispose();
-        image.dispose();
+        // Sets to fit-all mode (no zoom) initially
+        orthographicCamera.setToOrtho(false, screenWidth, screenHeight);
+        
+        viewport = new StretchViewport(Constants.CAMPUS_MAX_X, Constants.CAMPUS_MAX_Y, orthographicCamera);
+        setScreen(new GameScreen(orthographicCamera, viewport));
     }
 }
