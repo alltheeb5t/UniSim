@@ -21,6 +21,7 @@ import io.github.alltheeb5t.unisim.building_components.StructureTypeComponent;
 import io.github.alltheeb5t.unisim.factories.BuildingFactory;
 import io.github.alltheeb5t.unisim.map_objects.MapBuilding;
 import io.github.alltheeb5t.unisim.systems.MapInputSystem;
+import io.github.alltheeb5t.unisim.systems.SatisfactionSystem;
 
 public class GameScreen extends ScreenAdapter implements InputProcessor {
 
@@ -58,6 +59,9 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
         box2dDebugRenderer.render(campusMap.getWorld(), campusMap.getCamera().combined.scl(1));
         campusMap.getStage().draw();
+
+        // Recalculating satisfaction on every frame is incredibly inefficient. Should really do it on drag end event
+        SatisfactionSystem.recalculateBuildingSatisfaction(buildings);
 
     }
 
