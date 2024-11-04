@@ -39,9 +39,17 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         campusMap = new CampusMap(camera, new Stage(viewport), new World(new Vector2(0, 0), false), new DragAndDrop());
 
         satisfactions.add(new SatisfactionComponent());
-        buildings.add(BuildingFactory.makeMapBuilding(480, 100, StructureTypeComponent.ACCOMMODATION, satisfactions.get(0), campusMap));
+        buildings.add(BuildingFactory.makeMapBuilding(1230, 100, StructureTypeComponent.ACCOMMODATION, satisfactions.get(0), campusMap));
         satisfactions.add(new SatisfactionComponent());
-        buildings.add(BuildingFactory.makeMapBuilding(300, 200, StructureTypeComponent.CATERING, satisfactions.get(1), campusMap));
+        buildings.add(BuildingFactory.makeMapBuilding(120, 100, StructureTypeComponent.ACCOMMODATION, satisfactions.get(0), campusMap));
+        satisfactions.add(new SatisfactionComponent());
+        buildings.add(BuildingFactory.makeMapBuilding(500, 100, StructureTypeComponent.ACCOMMODATION, satisfactions.get(0), campusMap));
+        satisfactions.add(new SatisfactionComponent());
+        buildings.add(BuildingFactory.makeMapBuilding(270, 450, StructureTypeComponent.STUDY, satisfactions.get(1), campusMap));
+        satisfactions.add(new SatisfactionComponent());
+        buildings.add(BuildingFactory.makeMapBuilding(1240, 57, StructureTypeComponent.ENTERTAINMENT, satisfactions.get(2), campusMap));
+        satisfactions.add(new SatisfactionComponent());
+        buildings.add(BuildingFactory.makeMapBuilding(300, 200, StructureTypeComponent.CATERING, satisfactions.get(3), campusMap));
 
         Gdx.input.setInputProcessor(this); // Inputs related to drag are manually passed to stage
         

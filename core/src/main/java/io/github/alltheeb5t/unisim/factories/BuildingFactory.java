@@ -24,16 +24,24 @@ public class BuildingFactory {
 
         switch (type) {
             case CATERING:
-                newBuildingName = new StructureNameComponent("Piazza");
-                mapObstructionFootprint = PlacementRestrictionFactory.makePlacementRestrictionComponent(x, y, 120, campusMap.getWorld(), new Texture("piazza.png"));
+                newBuildingName = new StructureNameComponent("Roger Kirk Centre");
+                mapObstructionFootprint = PlacementRestrictionFactory.makePlacementRestrictionComponent(x, y, 120, campusMap.getWorld(), new Texture("roger_kirk.png"));
                 break;
             case ACCOMMODATION:
                 newBuildingName = new StructureNameComponent("John West Taylor Court");
                 mapObstructionFootprint = PlacementRestrictionFactory.makePlacementRestrictionComponent(x, y, 60, campusMap.getWorld(), new Texture("john_west_taylor_court.png"));
                 break;
+            case ENTERTAINMENT:
+                newBuildingName = new StructureNameComponent("York Barbican");
+                mapObstructionFootprint = PlacementRestrictionFactory.makePlacementRestrictionComponent(x, y, 150, campusMap.getWorld(), new Texture("york_barbican.png"));
+                break;
+            case STUDY:
+                newBuildingName = new StructureNameComponent("Law & Management Building");
+                mapObstructionFootprint = PlacementRestrictionFactory.makePlacementRestrictionComponent(x, y, 100, campusMap.getWorld(), new Texture("law_and_management.png"));
+                break;
             default:
-                newBuildingName = new StructureNameComponent("Piazza");
-                mapObstructionFootprint = PlacementRestrictionFactory.makePlacementRestrictionComponent(x, y, 120, campusMap.getWorld(), new Texture("piazza.png"));
+                newBuildingName = new StructureNameComponent("Roger Kirk Centre");
+                mapObstructionFootprint = PlacementRestrictionFactory.makePlacementRestrictionComponent(x, y, 120, campusMap.getWorld(), new Texture("roger_kirk.png"));
         }
         
         campusMap.getStage().addActor(mapObstructionFootprint.getImageObject());
