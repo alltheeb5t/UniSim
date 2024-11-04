@@ -20,8 +20,13 @@ public class MapBuilding {
         this.satisfaction = satisfaction;
     }
 
+    // TODO Change the name of this to getPlacementRestriction
     public PlacementRestrictionComponent geMapObstruction() {
         return myObstructionFootprint;
+    }
+
+    public StructureTypeComponent getStructureTypeComponent() {
+        return type;
     }
 
     public SatisfactionComponent getSatisfactionComponent() {
