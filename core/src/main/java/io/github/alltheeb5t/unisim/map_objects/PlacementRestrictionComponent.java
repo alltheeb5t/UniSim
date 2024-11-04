@@ -6,7 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 /**
  * Represents any object that is to be drawn on the map.
  */
-public class MapObstruction {
+public class PlacementRestrictionComponent {
     protected float width, height;
     protected Body body;
     protected Image imageObject;
@@ -17,10 +17,10 @@ public class MapObstruction {
      * @param y
      * @param width
      * @param height
-     * @param world
-     * @param texture
+     * @param imageObject
+     * @param body
      */
-    public MapObstruction(float x, float y, float width, float height, Image imageObject, Body body) {
+    public PlacementRestrictionComponent(float x, float y, float width, float height, Image imageObject, Body body) {
         this.body = body;
         this.imageObject = imageObject;
         this.width = width;

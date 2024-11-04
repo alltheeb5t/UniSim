@@ -2,13 +2,13 @@ package io.github.alltheeb5t.unisim.systems;
 
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
-import io.github.alltheeb5t.unisim.map_objects.MapObstruction;
+import io.github.alltheeb5t.unisim.map_objects.PlacementRestrictionComponent;
 
 public class BuildingSystem {
     /**
      * Called repeatedly when building being dragged. Ensures the box2D Body lines up with image position.
      */
-    public static void syncBodyPosition(MapObstruction mapObstruction) {
+    public static void syncBodyPosition(PlacementRestrictionComponent mapObstruction) {
         // Static objects should not have any drag functionality
         if (mapObstruction.getBody().getType() == BodyType.DynamicBody) {
             float x = mapObstruction.getImageObject().getX();

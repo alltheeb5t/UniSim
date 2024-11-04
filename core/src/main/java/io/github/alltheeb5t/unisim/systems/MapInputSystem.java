@@ -11,13 +11,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 
 import io.github.alltheeb5t.unisim.CampusMap;
 import io.github.alltheeb5t.unisim.Constants;
-import io.github.alltheeb5t.unisim.map_objects.MapObstruction;
+import io.github.alltheeb5t.unisim.map_objects.PlacementRestrictionComponent;
 
 public class MapInputSystem {
 
     // ─── Building Movement ───────────────────────────────────────────────
 
-    public static void registerDraggableObstruction(DragAndDrop dragAndDrop, Stage stage, MapObstruction obstruction) {
+    public static void registerDraggableObstruction(DragAndDrop dragAndDrop, Stage stage, PlacementRestrictionComponent obstruction) {
         // Drag and drop listener for test building
         dragAndDrop.addSource(new DragAndDrop.Source(obstruction.getImageObject()) {
             @Override

@@ -1,17 +1,17 @@
 package io.github.alltheeb5t.unisim.building_components;
 
 public class SatisfactionComponent {
-    private int lastCalculatedSatisfaction;
+    private float lastCalculatedSatisfaction;
 
     public SatisfactionComponent() {
         lastCalculatedSatisfaction = 0;
     }
 
-    public int getLastCalculatedSatisfaction() {
+    public float getLastCalculatedSatisfaction() {
         return lastCalculatedSatisfaction;
     }
 
-    public int setLastCalculatedSatisfaction(int newValue) {
+    public float setLastCalculatedSatisfaction(float newValue) {
         lastCalculatedSatisfaction = newValue;
         return lastCalculatedSatisfaction;
     }

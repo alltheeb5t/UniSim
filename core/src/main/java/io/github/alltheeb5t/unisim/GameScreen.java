@@ -8,7 +8,6 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -19,7 +18,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 import io.github.alltheeb5t.unisim.building_components.SatisfactionComponent;
 import io.github.alltheeb5t.unisim.building_components.StructureTypeComponent;
-import io.github.alltheeb5t.unisim.factories.MapObstructionFactory;
+import io.github.alltheeb5t.unisim.factories.BuildingFactory;
 import io.github.alltheeb5t.unisim.map_objects.MapBuilding;
 import io.github.alltheeb5t.unisim.systems.MapInputSystem;
 
@@ -39,9 +38,9 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         campusMap = new CampusMap(camera, new Stage(viewport), new World(new Vector2(0, 0), false), new DragAndDrop());
 
         satisfactions.add(new SatisfactionComponent());
-        buildings.add(MapObstructionFactory.makeMapBuilding(480, 100, StructureTypeComponent.ACCOMMODATION, satisfactions.get(0), campusMap));
+        buildings.add(BuildingFactory.makeMapBuilding(480, 100, StructureTypeComponent.ACCOMMODATION, satisfactions.get(0), campusMap));
         satisfactions.add(new SatisfactionComponent());
-        buildings.add(MapObstructionFactory.makeMapBuilding(300, 200, StructureTypeComponent.CATERING, satisfactions.get(1), campusMap));
+        buildings.add(BuildingFactory.makeMapBuilding(300, 200, StructureTypeComponent.CATERING, satisfactions.get(1), campusMap));
 
         Gdx.input.setInputProcessor(this); // Inputs related to drag are manually passed to stage
         
