@@ -16,7 +16,7 @@ public class MapInputSystem {
 
     // ─── Building Movement ───────────────────────────────────────────────
 
-    public static void registerDraggableObstruction(LibGdxRenderingEntity libGdxRenderingEntity, BuildingEntity buildingEntity) {
+    public static void registerDraggableObstruction(LibGdxRenderingEntity libGdxRenderingEntity, BuildingEntity buildingEntity, CampusMapEntity campusMapEntity) {
         // Drag and drop listener for specified building
         libGdxRenderingEntity.getDragAndDrop().addSource(new DragAndDrop.Source(buildingEntity.getImageComponent()) {
             @Override
@@ -24,7 +24,10 @@ public class MapInputSystem {
                 DragAndDrop.Payload payload = new DragAndDrop.Payload();
 				payload.setDragActor(getActor());
                 libGdxRenderingEntity.getStage().addActor(buildingEntity.getImageComponent());
+                buildingEntity.getImageComponent().toFront(); // Ensures that entity being dragged around is always rendered above others
 				libGdxRenderingEntity.getDragAndDrop().setDragActorPosition(getActor().getWidth() / 2, -getActor().getHeight() / 2); // Move image so the cursor is in the centre of the object during dragging
+
+                BuildingSystem.updatePlacementPosition(buildingEntity);
 
 				return payload;
 			}
@@ -33,11 +36,24 @@ public class MapInputSystem {
             public void drag(InputEvent event, float x, float y, int pointer) {
                 super.drag(event, x, y, pointer);
                 BuildingSystem.syncBoundingBoxPosition(buildingEntity);
+
+                // Turn image red if a collision is detected
+                if (!CampusMapSystem.isPlacementAllowed(campusMapEntity, buildingEntity)) {
+                    buildingEntity.getImageComponent().setColor(255, 0, 0, 255);
+                } else {
+                    buildingEntity.getImageComponent().setColor(255, 255, 255, 255);
+                }
             }
 
 			@Override
 			public void dragStop(InputEvent event, float x, float y, int pointer, DragAndDrop.Payload payload, DragAndDrop.Target target) {
-				System.out.println("Debug: Drag stop");
+				buildingEntity.getImageComponent().setColor(255, 255, 255, 255); // Clear red colouring
+
+                if (CampusMapSystem.isPlacementAllowed(campusMapEntity, buildingEntity)) {
+                    BuildingSystem.updatePlacementPosition(buildingEntity);
+                } else {
+                    BuildingSystem.returnToPlacedPosition(buildingEntity);
+                }
 			}
         });
     }

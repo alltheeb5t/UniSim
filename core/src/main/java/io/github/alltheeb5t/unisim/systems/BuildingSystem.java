@@ -19,6 +19,39 @@ public class BuildingSystem {
     }
 
     /**
+     * Called when a building has been successfully placed down after a drag event
+     * @param buildingEntity
+     */
+    public static void updatePlacementPosition(BuildingEntity buildingEntity) {
+        buildingEntity.getPlacementComponent().setPosition(
+            buildingEntity.getImageComponent().getX(),
+            buildingEntity.getImageComponent().getY());
+    }
+
+    /**
+     * If a user stops dragging a building in an invalid location, we need to return it to its last valid location.
+     * @param buildingEntity
+     * @return True if the building was returned to an old location. False if the building had never previously been placed
+     */
+    public static boolean returnToPlacedPosition(BuildingEntity buildingEntity) {
+        if (buildingEntity.getPlacementComponent().getXPos() == -1) {
+            return false;
+        }
+
+        System.out.println("DEBUG: Returning building to: "+ buildingEntity.getPlacementComponent().getXPos()+ ", "+
+        buildingEntity.getPlacementComponent().getYPos());
+
+        buildingEntity.getImageComponent().setPosition(
+            buildingEntity.getPlacementComponent().getXPos(),
+            buildingEntity.getPlacementComponent().getYPos()
+        );
+
+        syncBoundingBoxPosition(buildingEntity);
+
+        return true;
+    }
+
+    /**
      * Return the total number of a given building type.
      * @param type
      * @param allBuildings
