@@ -18,6 +18,8 @@ import io.github.alltheeb5t.unisim.entities.BuildingEntity;
 import io.github.alltheeb5t.unisim.entities.CampusMapEntity;
 import io.github.alltheeb5t.unisim.entities.LibGdxRenderingEntity;
 import io.github.alltheeb5t.unisim.factories.BuildingFactory;
+import io.github.alltheeb5t.unisim.factories.ObstaclesFactory;
+import io.github.alltheeb5t.unisim.map_objects.MapObstacleComponent;
 import io.github.alltheeb5t.unisim.systems.CampusMapSystem;
 import io.github.alltheeb5t.unisim.systems.MapInputSystem;
 import io.github.alltheeb5t.unisim.systems.SatisfactionSystem;
@@ -36,10 +38,23 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         libGdxRenderingEntity = new LibGdxRenderingEntity(camera, new Stage(viewport), new DragAndDrop());
         campusMap = new CampusMapEntity();
 
-        BuildingEntity newBuildingEntity = BuildingFactory.makeMapBuilding(1230, 100, StructureTypeComponent.ACCOMMODATION);
-        CampusMapSystem.addBuildingToMap(campusMap, newBuildingEntity.getBoundingBoxComponent(), newBuildingEntity.getImageComponent(), newBuildingEntity.getSatisfactionComponent());
-        libGdxRenderingEntity.getStage().addActor(newBuildingEntity.getImageComponent());
-        MapInputSystem.registerDraggableObstruction(libGdxRenderingEntity, newBuildingEntity);
+        obstacles.add(ObstaclesFactory.makeMapOrchard(475,200, campusMap));
+        obstacles.add(ObstaclesFactory.makeMapOrchard(100,750, campusMap));
+        obstacles.add(ObstaclesFactory.makeMapOrchard(650,850, campusMap));
+        obstacles.add(ObstaclesFactory.makeMapOrchard(900,550, campusMap));
+        obstacles.add(ObstaclesFactory.makeMapRoad(700, 900, campusMap));
+        obstacles.add(ObstaclesFactory.makeMapLake(800, 500, campusMap, 0));
+        obstacles.add(ObstaclesFactory.makeMapRiver(1700, 400, campusMap));
+        obstacles.add(ObstaclesFactory.makeMapBridge(1700, 500, campusMap));
+        obstacles.add(ObstaclesFactory.makeMapLake(1675, 125, campusMap, 1));
+        obstacles.add(ObstaclesFactory.makeMapMountain(1700, 900, campusMap));
+        obstacles.add(ObstaclesFactory.makeMapMountain(1650, 875, campusMap));
+        obstacles.add(ObstaclesFactory.makeMapMountain(1785, 850, campusMap));
+        
+        satisfactions.add(new SatisfactionComponent());
+        buildings.add(BuildingFactory.makeMapBuilding(480, 100, StructureTypeComponent.ACCOMMODATION, satisfactions.get(0), campusMap));
+        satisfactions.add(new SatisfactionComponent());
+        buildings.add(BuildingFactory.makeMapBuilding(300, 200, StructureTypeComponent.CATERING, satisfactions.get(1), campusMap));
 
         Gdx.input.setInputProcessor(this); // Inputs related to drag are manually passed to stage
         
