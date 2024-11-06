@@ -9,47 +9,37 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-import io.github.alltheeb5t.unisim.building_components.SatisfactionComponent;
 import io.github.alltheeb5t.unisim.building_components.StructureTypeComponent;
+import io.github.alltheeb5t.unisim.entities.BuildingEntity;
+import io.github.alltheeb5t.unisim.entities.CampusMapEntity;
+import io.github.alltheeb5t.unisim.entities.LibGdxRenderingEntity;
 import io.github.alltheeb5t.unisim.factories.BuildingFactory;
-import io.github.alltheeb5t.unisim.map_objects.MapBuilding;
+import io.github.alltheeb5t.unisim.systems.CampusMapSystem;
 import io.github.alltheeb5t.unisim.systems.MapInputSystem;
 import io.github.alltheeb5t.unisim.systems.SatisfactionSystem;
 
 public class GameScreen extends ScreenAdapter implements InputProcessor {
 
     private SpriteBatch batch;
-    private Box2DDebugRenderer box2dDebugRenderer;
+    private LibGdxRenderingEntity libGdxRenderingEntity;
 
-    private CampusMap campusMap;
-    private List<MapBuilding> buildings = new LinkedList<>();
-    private List<SatisfactionComponent> satisfactions = new LinkedList<>();
+    private CampusMapEntity campusMap;
+    private List<BuildingEntity> buildings = new LinkedList<>();
 
     public GameScreen (OrthographicCamera camera, Viewport viewport) {
         batch = new SpriteBatch();
 
-        box2dDebugRenderer = new Box2DDebugRenderer();
-        campusMap = new CampusMap(camera, new Stage(viewport), new World(new Vector2(0, 0), false), new DragAndDrop());
+        libGdxRenderingEntity = new LibGdxRenderingEntity(camera, new Stage(viewport), new DragAndDrop());
+        campusMap = new CampusMapEntity();
 
-        satisfactions.add(new SatisfactionComponent());
-        buildings.add(BuildingFactory.makeMapBuilding(1230, 100, StructureTypeComponent.ACCOMMODATION, satisfactions.get(0), campusMap));
-        satisfactions.add(new SatisfactionComponent());
-        buildings.add(BuildingFactory.makeMapBuilding(120, 100, StructureTypeComponent.ACCOMMODATION, satisfactions.get(0), campusMap));
-        satisfactions.add(new SatisfactionComponent());
-        buildings.add(BuildingFactory.makeMapBuilding(500, 100, StructureTypeComponent.ACCOMMODATION, satisfactions.get(0), campusMap));
-        satisfactions.add(new SatisfactionComponent());
-        buildings.add(BuildingFactory.makeMapBuilding(270, 450, StructureTypeComponent.STUDY, satisfactions.get(1), campusMap));
-        satisfactions.add(new SatisfactionComponent());
-        buildings.add(BuildingFactory.makeMapBuilding(1240, 57, StructureTypeComponent.ENTERTAINMENT, satisfactions.get(2), campusMap));
-        satisfactions.add(new SatisfactionComponent());
-        buildings.add(BuildingFactory.makeMapBuilding(300, 200, StructureTypeComponent.CATERING, satisfactions.get(3), campusMap));
+        BuildingEntity newBuildingEntity = BuildingFactory.makeMapBuilding(1230, 100, StructureTypeComponent.ACCOMMODATION);
+        CampusMapSystem.addBuildingToMap(campusMap, newBuildingEntity.getBoundingBoxComponent(), newBuildingEntity.getImageComponent(), newBuildingEntity.getSatisfactionComponent());
+        libGdxRenderingEntity.getStage().addActor(newBuildingEntity.getImageComponent());
+        MapInputSystem.registerDraggableObstruction(libGdxRenderingEntity, newBuildingEntity);
 
         Gdx.input.setInputProcessor(this); // Inputs related to drag are manually passed to stage
         
@@ -61,12 +51,12 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
-        batch.setProjectionMatrix(campusMap.getCamera().combined);
+        batch.setProjectionMatrix(libGdxRenderingEntity.getCamera().combined);
+
         // This is where we would render any static objects
         batch.end();
 
-        box2dDebugRenderer.render(campusMap.getWorld(), campusMap.getCamera().combined.scl(1));
-        campusMap.getStage().draw();
+        libGdxRenderingEntity.getStage().draw();
 
         // Recalculating satisfaction on every frame is incredibly inefficient. Should really do it on drag end event
         SatisfactionSystem.recalculateBuildingSatisfaction(buildings);
@@ -76,7 +66,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     // ─── Map Pan And Zoom ────────────────────────────────────────────────
 
     public void resize(int width, int height) {
-        MapInputSystem.gameScreenResize(width, height, campusMap);
+        MapInputSystem.gameScreenResize(width, height, libGdxRenderingEntity);
     }
     
     @Override
@@ -89,7 +79,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
      */
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        return MapInputSystem.gameScreenTouchDown(screenX, screenY, pointer, button, campusMap);
+        return MapInputSystem.gameScreenTouchDown(screenX, screenY, pointer, button, libGdxRenderingEntity);
     }
 
     /**
@@ -101,7 +91,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
      */
     @Override
     public boolean touchDragged (int screenX, int screenY, int pointer) {
-        return MapInputSystem.gameScreenDrag(screenX, screenY, pointer, campusMap);
+        return MapInputSystem.gameScreenDrag(screenX, screenY, pointer, libGdxRenderingEntity);
     }
 
     /**
@@ -109,7 +99,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
      */
     @Override
     public boolean touchUp (int screenX, int screenY, int pointer, int button) {
-        return MapInputSystem.gameScreenTouchUp(screenX, screenY, pointer, button, campusMap);
+        return MapInputSystem.gameScreenTouchUp(screenX, screenY, pointer, button, libGdxRenderingEntity);
     }
 
 	@Override public boolean keyDown (int keycode) {
@@ -131,7 +121,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
      * @return
      */
 	@Override public boolean scrolled (float amountX, float amountY) {
-        return MapInputSystem.gameScreenScroll(amountY, campusMap);
+        return MapInputSystem.gameScreenScroll(amountY, libGdxRenderingEntity);
 	}
 
     /**

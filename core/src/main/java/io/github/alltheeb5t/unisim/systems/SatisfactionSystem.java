@@ -6,7 +6,7 @@ import java.util.Map;
 
 import io.github.alltheeb5t.unisim.building_components.SatisfactionComponent;
 import io.github.alltheeb5t.unisim.building_components.StructureTypeComponent;
-import io.github.alltheeb5t.unisim.map_objects.MapBuilding;
+import io.github.alltheeb5t.unisim.entities.BuildingEntity;
 
 /**
  * The SatisfactionSystem provides the methods that calculates the satisfaction value for each building.
@@ -32,26 +32,26 @@ public class SatisfactionSystem {
     /**
      * Returns the distance between the target building and the nearest building of specified type.
      * @param type: StructureTypeComponent
-     * @param targetBuilding: MapBuilding
+     * @param targetBuilding: BuildingEntity
      * @param allBuildings
      * @return float - Distance value
      */
-    private static float getNearestBuildingOfType(StructureTypeComponent type, MapBuilding targetBuilding, List<MapBuilding> allBuildings) {
+    private static float getNearestBuildingOfType(StructureTypeComponent type, BuildingEntity targetBuilding, List<BuildingEntity> allBuildings) {
         // Increase efficiency slightly by not going through Pythagoras calculation just to get 0;
         if (targetBuilding.getStructureTypeComponent() == type) {
             return 0;
         }
 
-        Iterator<MapBuilding> building = allBuildings.iterator();
+        Iterator<BuildingEntity> building = allBuildings.iterator();
 
         float currentClosest = Float.MAX_VALUE;
 
         while (building.hasNext()) {
-            MapBuilding currentBuilding = building.next();
+            BuildingEntity currentBuilding = building.next();
             if (currentBuilding.getStructureTypeComponent() == type) {
                 // Calculate shortest distance using pythagoras' theorem. Split into variables to make less unwieldy.
-                float dX = (targetBuilding.geMapObstruction().getImageObject().getX() - currentBuilding.geMapObstruction().getImageObject().getX());
-                float dY = (targetBuilding.geMapObstruction().getImageObject().getY() - currentBuilding.geMapObstruction().getImageObject().getY());
+                float dX = (targetBuilding.getImageComponent().getX() - currentBuilding.getImageComponent().getX());
+                float dY = (targetBuilding.getImageComponent().getY() - currentBuilding.getImageComponent().getY());
                 float newDistance = (float)(Math.sqrt(Math.pow(dX, 2)+Math.pow(dY, 2)));
 
                 currentClosest = Math.min(currentClosest, newDistance);
@@ -113,7 +113,7 @@ public class SatisfactionSystem {
      * @param allBuildings List of all buildings to find distance
      * @return
      */
-    private static float calculateIndividualBuildingSatisfaction(MapBuilding building, List<MapBuilding> allBuildings) {
+    private static float calculateIndividualBuildingSatisfaction(BuildingEntity building, List<BuildingEntity> allBuildings) {
         Map<StructureTypeComponent, Float> distanceMap = Map.of(
             StructureTypeComponent.ACCOMMODATION, getNearestBuildingOfType(StructureTypeComponent.ACCOMMODATION, building, allBuildings),
             StructureTypeComponent.CATERING, getNearestBuildingOfType(StructureTypeComponent.CATERING, building, allBuildings),
@@ -130,11 +130,11 @@ public class SatisfactionSystem {
      * Calculated value is stored in a building's associated BuildingSatisfactionComponent.
      * @param allBuildings
      */
-    public static void recalculateBuildingSatisfaction(List<MapBuilding> allBuildings) {
-        Iterator<MapBuilding> building = allBuildings.iterator();
+    public static void recalculateBuildingSatisfaction(List<BuildingEntity> allBuildings) {
+        Iterator<BuildingEntity> building = allBuildings.iterator();
 
         while (building.hasNext()) {
-            MapBuilding currentBuilding = building.next();
+            BuildingEntity currentBuilding = building.next();
             currentBuilding.getSatisfactionComponent().setLastCalculatedSatisfaction(calculateIndividualBuildingSatisfaction(currentBuilding, allBuildings));
         }
     }
