@@ -53,6 +53,8 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         obstacles.addAll(ObstaclesFactory.makeMapMountain(1650, 875, libGdxRenderingEntity));
         obstacles.addAll(ObstaclesFactory.makeMapMountain(1785, 850, libGdxRenderingEntity));
 
+        CampusMapSystem.addAllObstaclesToMap(campusMap, obstacles);
+
         BuildingEntity newBuildingEntity = BuildingFactory.makeMapBuilding(1230, 100, StructureTypeComponent.ACCOMMODATION);
         CampusMapSystem.addBuildingToMap(campusMap, newBuildingEntity.getBoundingBoxComponent(), newBuildingEntity.getImageComponent(), newBuildingEntity.getSatisfactionComponent());
         libGdxRenderingEntity.getStage().addActor(newBuildingEntity.getImageComponent());
