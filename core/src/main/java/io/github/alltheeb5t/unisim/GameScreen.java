@@ -19,7 +19,9 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import io.github.alltheeb5t.unisim.building_components.SatisfactionComponent;
 import io.github.alltheeb5t.unisim.building_components.StructureTypeComponent;
 import io.github.alltheeb5t.unisim.factories.BuildingFactory;
+import io.github.alltheeb5t.unisim.factories.ObstaclesFactory;
 import io.github.alltheeb5t.unisim.map_objects.MapBuilding;
+import io.github.alltheeb5t.unisim.map_objects.MapObstacleComponent;
 import io.github.alltheeb5t.unisim.systems.MapInputSystem;
 
 public class GameScreen extends ScreenAdapter implements InputProcessor {
@@ -29,6 +31,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
     private CampusMap campusMap;
     private List<MapBuilding> buildings = new LinkedList<>();
+    private List<MapObstacleComponent> obstacles = new LinkedList<>();
     private List<SatisfactionComponent> satisfactions = new LinkedList<>();
 
     public GameScreen (OrthographicCamera camera, Viewport viewport) {
@@ -37,6 +40,19 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         box2dDebugRenderer = new Box2DDebugRenderer();
         campusMap = new CampusMap(camera, new Stage(viewport), new World(new Vector2(0, 0), false), new DragAndDrop());
 
+        obstacles.add(ObstaclesFactory.makeMapOrchard(475,200, campusMap));
+        obstacles.add(ObstaclesFactory.makeMapOrchard(100,750, campusMap));
+        obstacles.add(ObstaclesFactory.makeMapOrchard(650,850, campusMap));
+        obstacles.add(ObstaclesFactory.makeMapOrchard(900,550, campusMap));
+        obstacles.add(ObstaclesFactory.makeMapRoad(700, 900, campusMap));
+        obstacles.add(ObstaclesFactory.makeMapLake(800, 500, campusMap, 0));
+        obstacles.add(ObstaclesFactory.makeMapRiver(1700, 400, campusMap));
+        obstacles.add(ObstaclesFactory.makeMapBridge(1700, 500, campusMap));
+        obstacles.add(ObstaclesFactory.makeMapLake(1675, 125, campusMap, 1));
+        obstacles.add(ObstaclesFactory.makeMapMountain(1700, 900, campusMap));
+        obstacles.add(ObstaclesFactory.makeMapMountain(1650, 875, campusMap));
+        obstacles.add(ObstaclesFactory.makeMapMountain(1785, 850, campusMap));
+        
         satisfactions.add(new SatisfactionComponent());
         buildings.add(BuildingFactory.makeMapBuilding(480, 100, StructureTypeComponent.ACCOMMODATION, satisfactions.get(0), campusMap));
         satisfactions.add(new SatisfactionComponent());
