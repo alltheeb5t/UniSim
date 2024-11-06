@@ -16,8 +16,8 @@ public class BoundingBoxComponentFactory {
      * @return
      */
     public static BoundingBoxComponent makeBoundingBoxComponent(Image imageComponent) {
-        return makeBoundingBoxComponent(imageComponent.getImageX(),
-                                        imageComponent.getImageY(),
+        return makeBoundingBoxComponent(imageComponent.getX(),
+                                        imageComponent.getY(),
                                         imageComponent.getWidth(),
                                         imageComponent.getHeight());
     }

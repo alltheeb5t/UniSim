@@ -39,7 +39,12 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         BuildingEntity newBuildingEntity = BuildingFactory.makeMapBuilding(1230, 100, StructureTypeComponent.ACCOMMODATION);
         CampusMapSystem.addBuildingToMap(campusMap, newBuildingEntity.getBoundingBoxComponent(), newBuildingEntity.getImageComponent(), newBuildingEntity.getSatisfactionComponent());
         libGdxRenderingEntity.getStage().addActor(newBuildingEntity.getImageComponent());
-        MapInputSystem.registerDraggableObstruction(libGdxRenderingEntity, newBuildingEntity);
+        MapInputSystem.registerDraggableObstruction(libGdxRenderingEntity, newBuildingEntity, campusMap);
+
+        BuildingEntity newBuildingEntity2 = BuildingFactory.makeMapBuilding(870, 100, StructureTypeComponent.CATERING);
+        CampusMapSystem.addBuildingToMap(campusMap, newBuildingEntity2.getBoundingBoxComponent(), newBuildingEntity2.getImageComponent(), newBuildingEntity2.getSatisfactionComponent());
+        libGdxRenderingEntity.getStage().addActor(newBuildingEntity2.getImageComponent());
+        MapInputSystem.registerDraggableObstruction(libGdxRenderingEntity, newBuildingEntity2, campusMap);
 
         Gdx.input.setInputProcessor(this); // Inputs related to drag are manually passed to stage
         
