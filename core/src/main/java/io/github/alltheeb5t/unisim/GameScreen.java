@@ -31,6 +31,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
     private CampusMapEntity campusMap;
     private List<BuildingEntity> buildings = new LinkedList<>();
+    private List<MapObstacleComponent> obstacles = new LinkedList<>();
 
     public GameScreen (OrthographicCamera camera, Viewport viewport) {
         batch = new SpriteBatch();
@@ -38,23 +39,18 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         libGdxRenderingEntity = new LibGdxRenderingEntity(camera, new Stage(viewport), new DragAndDrop());
         campusMap = new CampusMapEntity();
 
-        obstacles.add(ObstaclesFactory.makeMapOrchard(475,200, campusMap));
-        obstacles.add(ObstaclesFactory.makeMapOrchard(100,750, campusMap));
-        obstacles.add(ObstaclesFactory.makeMapOrchard(650,850, campusMap));
-        obstacles.add(ObstaclesFactory.makeMapOrchard(900,550, campusMap));
-        obstacles.add(ObstaclesFactory.makeMapRoad(700, 900, campusMap));
-        obstacles.add(ObstaclesFactory.makeMapLake(800, 500, campusMap, 0));
-        obstacles.add(ObstaclesFactory.makeMapRiver(1700, 400, campusMap));
-        obstacles.add(ObstaclesFactory.makeMapBridge(1700, 500, campusMap));
-        obstacles.add(ObstaclesFactory.makeMapLake(1675, 125, campusMap, 1));
-        obstacles.add(ObstaclesFactory.makeMapMountain(1700, 900, campusMap));
-        obstacles.add(ObstaclesFactory.makeMapMountain(1650, 875, campusMap));
-        obstacles.add(ObstaclesFactory.makeMapMountain(1785, 850, campusMap));
-        
-        satisfactions.add(new SatisfactionComponent());
-        buildings.add(BuildingFactory.makeMapBuilding(480, 100, StructureTypeComponent.ACCOMMODATION, satisfactions.get(0), campusMap));
-        satisfactions.add(new SatisfactionComponent());
-        buildings.add(BuildingFactory.makeMapBuilding(300, 200, StructureTypeComponent.CATERING, satisfactions.get(1), campusMap));
+        obstacles.addAll(ObstaclesFactory.makeMapOrchard(475,200, libGdxRenderingEntity));
+        obstacles.addAll(ObstaclesFactory.makeMapOrchard(100,750, libGdxRenderingEntity));
+        obstacles.addAll(ObstaclesFactory.makeMapOrchard(650,850, libGdxRenderingEntity));
+        obstacles.addAll(ObstaclesFactory.makeMapOrchard(900,550, libGdxRenderingEntity));
+        obstacles.add(ObstaclesFactory.makeMapRoad(700, 900, libGdxRenderingEntity));
+        obstacles.addAll(ObstaclesFactory.makeMapLake(800, 500, libGdxRenderingEntity, 0));
+        obstacles.add(ObstaclesFactory.makeMapRiver(1700, 400, libGdxRenderingEntity));
+        obstacles.add(ObstaclesFactory.makeMapBridge(1700, 500, libGdxRenderingEntity));
+        obstacles.addAll(ObstaclesFactory.makeMapLake(1675, 125, libGdxRenderingEntity, 1));
+        obstacles.addAll(ObstaclesFactory.makeMapMountain(1700, 900, libGdxRenderingEntity));
+        obstacles.addAll(ObstaclesFactory.makeMapMountain(1650, 875, libGdxRenderingEntity));
+        obstacles.addAll(ObstaclesFactory.makeMapMountain(1785, 850, libGdxRenderingEntity));
 
         Gdx.input.setInputProcessor(this); // Inputs related to drag are manually passed to stage
         

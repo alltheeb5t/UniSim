@@ -1,12 +1,15 @@
 package io.github.alltheeb5t.unisim.factories;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
-import io.github.alltheeb5t.unisim.CampusMap;
+import io.github.alltheeb5t.unisim.building_components.BoundingBoxComponent;
+import io.github.alltheeb5t.unisim.entities.LibGdxRenderingEntity;
 import io.github.alltheeb5t.unisim.map_objects.MapObstacleComponent;
-import io.github.alltheeb5t.unisim.map_objects.PlacementRestrictionComponent;
 
 public class ObstaclesFactory {
 
@@ -17,21 +20,25 @@ public class ObstaclesFactory {
      * @param campusMap
      * @return
      */
-    public static MapObstacleComponent makeMapOrchard(float x, float y, CampusMap campusMap) {
+    public static List<MapObstacleComponent> makeMapOrchard(float x, float y, LibGdxRenderingEntity libGdxRenderingEntity) {
 
-        MapObstacleComponent orchard = new MapObstacleComponent();
+        List<MapObstacleComponent> orchard = new LinkedList<>();
         int numOfTrees = 17;
 
         for (int i = 0; i < numOfTrees; i++) {
             Random rand = new Random(); //randomly places each tree in the orchard
             float positionX = rand.nextInt(50) + x - 25;
             float positionY = rand.nextInt(80) + y - 40;
-            PlacementRestrictionComponent nextTreeTop = PlacementRestrictionFactory.makePlacementRestrictionComponent(positionX, positionY, 5, campusMap.getWorld(), new Texture("assets\\MapObstacles\\tree_square.png"));
-            campusMap.getStage().addActor(nextTreeTop.getImageObject());
-            orchard.addAnotherSquare(nextTreeTop);
-            PlacementRestrictionComponent nextTreeTrunk = PlacementRestrictionFactory.makePlacementRestrictionComponent(positionX, positionY - 2.5f, 1,2, campusMap.getWorld(), new Texture("assets\\MapObstacles\\tree_trunk_square.png"));
-            campusMap.getStage().addActor(nextTreeTrunk.getImageObject());
-            orchard.addAnotherSquare(nextTreeTrunk);
+
+            Image nextTreeTopImage = ImageComponentFactory.makeImageComponent(positionX, positionY, 5, new Texture("assets/MapObstacles/tree_square.png"));
+            BoundingBoxComponent nextTreeTopBoundingBox = BoundingBoxComponentFactory.makeBoundingBoxComponent(nextTreeTopImage);
+            libGdxRenderingEntity.getStage().addActor(nextTreeTopImage);
+            orchard.add(new MapObstacleComponent(nextTreeTopBoundingBox, nextTreeTopImage));
+
+            Image nextTreeTrunkImage = ImageComponentFactory.makeImageComponent(positionX, positionY -2.5f, 1, 2, new Texture("assets/MapObstacles/tree_trunk_square.png"));
+            BoundingBoxComponent nextTreeTrunkBoundingBox = BoundingBoxComponentFactory.makeBoundingBoxComponent(nextTreeTrunkImage);
+            libGdxRenderingEntity.getStage().addActor(nextTreeTrunkImage);
+            orchard.add(new MapObstacleComponent(nextTreeTrunkBoundingBox, nextTreeTrunkImage));
         }
 
         return orchard;
@@ -44,11 +51,12 @@ public class ObstaclesFactory {
      * @param campusMap
      * @return
      */
-    public static MapObstacleComponent makeMapRoad(float x, float y, CampusMap campusMap) { 
+    public static MapObstacleComponent makeMapRoad(float x, float y, LibGdxRenderingEntity libGdxRenderingEntity) { 
         
-        PlacementRestrictionComponent road = PlacementRestrictionFactory.makePlacementRestrictionComponent(x, y, 15,2000, campusMap.getWorld(), new Texture("assets\\MapObstacles\\road_square.png"));
-        campusMap.getStage().addActor(road.getImageObject());
-        return new MapObstacleComponent(road);
+        Image roadImage = ImageComponentFactory.makeImageComponent(x, y, 15, 2000, new Texture("assets/MapObstacles/road_square.png"));
+        BoundingBoxComponent roadBoundingBoxComponent = BoundingBoxComponentFactory.makeBoundingBoxComponent(roadImage);
+        libGdxRenderingEntity.getStage().addActor(roadImage);
+        return new MapObstacleComponent(roadBoundingBoxComponent, roadImage);
     }
 
     /**
@@ -56,23 +64,23 @@ public class ObstaclesFactory {
      * @param x  
      * @param y
      * @param campusMap
-     * @param round     determines the shape of the lake - larger number is more squewed lake
+     * @param round     determines the shape of the lake - larger number is more skewed lake
      * @return
      */
-    public static MapObstacleComponent makeMapLake(float x, float y, CampusMap campusMap, int round) {
+    public static List<MapObstacleComponent> makeMapLake(float x, float y, LibGdxRenderingEntity libGdxRenderingEntity, int round) {
 
-        MapObstacleComponent lake = new MapObstacleComponent();
+        List<MapObstacleComponent> lake = new LinkedList<>();
         
         int rowNumSquares = 3;
         float newX = x;
         float newY = y;
         for (int row = 0; row < 30; row++) { //30 rows is arbitrary. determines size of the lake
-            PlacementRestrictionComponent nextSquare;
             for (int col = 0; col < rowNumSquares; col++) {
                 newX += 10;
-                nextSquare  =  PlacementRestrictionFactory.makePlacementRestrictionComponent(newX, newY, 10, 5, campusMap.getWorld(), new Texture("assets\\MapObstacles\\lake_square.png"));
-                campusMap.getStage().addActor(nextSquare.getImageObject());
-                lake.addAnotherSquare(nextSquare); 
+                Image nextLakeImage = ImageComponentFactory.makeImageComponent(newX, newY, 10, 5, new Texture("assets/MapObstacles/lake_square.png"));
+                BoundingBoxComponent nextLakeBoundingBoxComponent = BoundingBoxComponentFactory.makeBoundingBoxComponent(nextLakeImage);
+                libGdxRenderingEntity.getStage().addActor(nextLakeImage);
+                lake.add(new MapObstacleComponent(nextLakeBoundingBoxComponent, nextLakeImage));
             }
 
             newY -= 5;
@@ -100,27 +108,30 @@ public class ObstaclesFactory {
      * @param campusMap
      * @return
      */
-    public static MapObstacleComponent makeMapMountain(float x, float y, CampusMap campusMap) {
+    public static List<MapObstacleComponent> makeMapMountain(float x, float y, LibGdxRenderingEntity libGdxRenderingEntity) {
 
-        MapObstacleComponent mountain = new MapObstacleComponent();
+        List<MapObstacleComponent> mountain = new LinkedList<>();
         
         int width = 0;
         float newY = y + 5;
         int mountainHeight = 31; //31 blocks each 5 meters in height.
         for (int row = 0; row < mountainHeight; row++) {
-            PlacementRestrictionComponent nextLevel;
             newY -= 5;
             width += 10;
 
+            Image nextLevelImage;
+
             if  (row < 6) { //first 6 rows are snow on top of the mountain.
-                nextLevel = PlacementRestrictionFactory.makePlacementRestrictionComponent(x, newY, width,5, campusMap.getWorld(), new Texture("assets\\MapObstacles\\mountain_peak_square.png"));
+                nextLevelImage = ImageComponentFactory.makeImageComponent(x, newY, width, 5, new Texture("assets/MapObstacles/mountain_peak_square.png"));
             }
             else {
-                nextLevel = PlacementRestrictionFactory.makePlacementRestrictionComponent(x, newY, width,5, campusMap.getWorld(), new Texture("assets\\MapObstacles\\mountain_square.png"));
+                nextLevelImage = ImageComponentFactory.makeImageComponent(x, newY, width, 5, new Texture("assets/MapObstacles/mountain_square.png"));
             }
 
-            mountain.addAnotherSquare(nextLevel);
-            campusMap.getStage().addActor(nextLevel.getImageObject());
+            BoundingBoxComponent nextLevelBoundingBoxComponent = BoundingBoxComponentFactory.makeBoundingBoxComponent(nextLevelImage);
+
+            mountain.add(new MapObstacleComponent(nextLevelBoundingBoxComponent, nextLevelImage));
+            libGdxRenderingEntity.getStage().addActor(nextLevelImage);
         }
 
         return mountain;
@@ -133,11 +144,12 @@ public class ObstaclesFactory {
      * @param campusMap
      * @return
      */
-    public static MapObstacleComponent makeMapRiver(float x, float y, CampusMap campusMap) {
+    public static MapObstacleComponent makeMapRiver(float x, float y, LibGdxRenderingEntity libGdxRenderingEntity) {
 
-        PlacementRestrictionComponent river = PlacementRestrictionFactory.makePlacementRestrictionComponent(x, y, 10,800, campusMap.getWorld(), new Texture("assets\\MapObstacles\\lake_square.png"));
-        campusMap.getStage().addActor(river.getImageObject());
-        return new MapObstacleComponent(river);
+        Image riverImage = ImageComponentFactory.makeImageComponent(x, y, 10, 800, new Texture("assets/MapObstacles/lake_square.png"));
+        BoundingBoxComponent riverBoundingBoxComponent = BoundingBoxComponentFactory.makeBoundingBoxComponent(riverImage);
+        libGdxRenderingEntity.getStage().addActor(riverImage);
+        return new MapObstacleComponent(riverBoundingBoxComponent, riverImage);
     }
 
     /**
@@ -147,10 +159,10 @@ public class ObstaclesFactory {
      * @param campusMap
      * @return
      */
-    public static MapObstacleComponent makeMapBridge(float x, float y, CampusMap campusMap) {
-
-        PlacementRestrictionComponent bridge = PlacementRestrictionFactory.makePlacementRestrictionComponent(x, y, 20,5, campusMap.getWorld(), new Texture("assets\\MapObstacles\\tree_trunk_square.png"));
-        campusMap.getStage().addActor(bridge.getImageObject());
-        return new MapObstacleComponent(bridge);
+    public static MapObstacleComponent makeMapBridge(float x, float y, LibGdxRenderingEntity libGdxRenderingEntity) {
+        Image bridgeImage = ImageComponentFactory.makeImageComponent(x, y, 20, 5, new Texture("assets/MapObstacles/tree_trunk_square.png"));
+        BoundingBoxComponent bridgeBoundingBoxComponent = BoundingBoxComponentFactory.makeBoundingBoxComponent(bridgeImage);
+        libGdxRenderingEntity.getStage().addActor(bridgeImage);
+        return new MapObstacleComponent(bridgeBoundingBoxComponent, bridgeImage);
     }
 }
