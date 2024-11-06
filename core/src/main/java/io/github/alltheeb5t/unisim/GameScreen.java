@@ -17,9 +17,9 @@ import io.github.alltheeb5t.unisim.building_components.StructureTypeComponent;
 import io.github.alltheeb5t.unisim.entities.BuildingEntity;
 import io.github.alltheeb5t.unisim.entities.CampusMapEntity;
 import io.github.alltheeb5t.unisim.entities.LibGdxRenderingEntity;
+import io.github.alltheeb5t.unisim.entities.MapObstacleEntity;
 import io.github.alltheeb5t.unisim.factories.BuildingFactory;
 import io.github.alltheeb5t.unisim.factories.ObstaclesFactory;
-import io.github.alltheeb5t.unisim.map_objects.MapObstacleComponent;
 import io.github.alltheeb5t.unisim.systems.CampusMapSystem;
 import io.github.alltheeb5t.unisim.systems.MapInputSystem;
 import io.github.alltheeb5t.unisim.systems.SatisfactionSystem;
@@ -31,7 +31,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
     private CampusMapEntity campusMap;
     private List<BuildingEntity> buildings = new LinkedList<>();
-    private List<MapObstacleComponent> obstacles = new LinkedList<>();
+    private List<MapObstacleEntity> obstacles = new LinkedList<>();
 
     public GameScreen (OrthographicCamera camera, Viewport viewport) {
         batch = new SpriteBatch();
