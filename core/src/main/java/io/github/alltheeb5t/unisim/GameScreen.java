@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 import io.github.alltheeb5t.unisim.factories.MapObstructionFactory;
 import io.github.alltheeb5t.unisim.map_objects.MapBuilding;
+import io.github.alltheeb5t.unisim.systems.GameTimerSystem;
 import io.github.alltheeb5t.unisim.systems.MapInputSystem;
 
 public class GameScreen extends ScreenAdapter implements InputProcessor {
@@ -25,6 +26,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
     private CampusMap campusMap;
     private MapBuilding testBuilding;
+    private GameTimerSystem gameTimer;
 
     public GameScreen (OrthographicCamera camera, Viewport viewport) {
         batch = new SpriteBatch();
@@ -32,6 +34,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         box2dDebugRenderer = new Box2DDebugRenderer();
         campusMap = new CampusMap(camera, new Stage(viewport), new World(new Vector2(0, 0), false), new DragAndDrop());
         testBuilding = MapObstructionFactory.makeMapBuilding(MapObstructionFactory.makeMapObstruction(480, 100, 120, campusMap.getWorld(), new Texture("piazza.png")), campusMap);
+        gameTimer = new GameTimerSystem();
 
         Gdx.input.setInputProcessor(this); // Inputs related to drag are manually passed to stage
         
@@ -46,6 +49,8 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         batch.setProjectionMatrix(campusMap.getCamera().combined);
         // This is where we would render any static objects
         batch.end();
+
+        gameTimer.tick(delta);
 
         box2dDebugRenderer.render(campusMap.getWorld(), campusMap.getCamera().combined.scl(1));
         campusMap.getStage().draw();
