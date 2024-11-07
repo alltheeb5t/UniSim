@@ -8,6 +8,7 @@ import io.github.alltheeb5t.unisim.building_components.GameTimerComponent;
 public class GameTimerEntity {
 
     GameTimerComponent gameTimerRecord;
+    Boolean paused = false;
 
     public GameTimerEntity() {
         gameTimerRecord = new GameTimerComponent();
@@ -15,5 +16,13 @@ public class GameTimerEntity {
 
     public GameTimerComponent getGameTimerRecord() {
         return gameTimerRecord;
+    }
+
+    public Boolean getPaused() {
+        return paused;
+    }
+
+    public void setPaused(Boolean paused) {
+        this.paused = paused;
     }
 }
