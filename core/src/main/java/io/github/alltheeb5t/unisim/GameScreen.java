@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
@@ -28,9 +29,14 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
     private SpriteBatch batch;
     private LibGdxRenderingEntity libGdxRenderingEntity;
+    private GUI gui;
 
     private CampusMapEntity campusMap;
-    private List<BuildingEntity> buildings = new LinkedList<>();
+    private static List<BuildingEntity> buildings = new LinkedList<>();
+        public static List<BuildingEntity> getBuildings() {
+            return buildings;
+    }
+
     private List<MapObstacleEntity> obstacles = new LinkedList<>();
 
     public GameScreen (OrthographicCamera camera, Viewport viewport) {
@@ -39,6 +45,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         libGdxRenderingEntity = new LibGdxRenderingEntity(camera, new Stage(viewport), new DragAndDrop());
         campusMap = new CampusMapEntity();
 
+        gui = new GUI();
 
         obstacles.addAll(ObstaclesFactory.makeMapOrchard(475,200, libGdxRenderingEntity));
         obstacles.addAll(ObstaclesFactory.makeMapOrchard(100,750, libGdxRenderingEntity));
@@ -66,8 +73,8 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         MapInputSystem.registerDraggableObstruction(libGdxRenderingEntity, newBuildingEntity2, campusMap);
 
 
-        Gdx.input.setInputProcessor(this); // Inputs related to drag are manually passed to stage
-        
+
+        Gdx.input.setInputProcessor(new InputMultiplexer(gui.getStage(), this)); // Inputs related to drag are manually passed to stage
     }
 
     @Override
@@ -85,6 +92,8 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
         // Recalculating satisfaction on every frame is incredibly inefficient. Should really do it on drag end event
         SatisfactionSystem.recalculateBuildingSatisfaction(buildings);
+
+        gui.render();
 
     }
 
