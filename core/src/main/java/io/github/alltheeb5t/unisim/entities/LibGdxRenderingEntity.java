@@ -1,26 +1,23 @@
-package io.github.alltheeb5t.unisim;
+package io.github.alltheeb5t.unisim.entities;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 
 /**
- * Used to store key libgdx rendering-related objects.
+ * This Entity stores standard LibGdx components. This class is used extensively by MapInputSystem
  */
-public class CampusMap {
+public class LibGdxRenderingEntity {
     private OrthographicCamera camera;
     private Stage stage;
-    private World world;
     private DragAndDrop dragAndDrop;
 
     // Used by drag routines to determine how much the pointer has moved since the routine last ran. Objects can then be translated accordingly
     private int lastTouchX, lastTouchY;
 
-    public CampusMap(OrthographicCamera camera, Stage stage, World world, DragAndDrop dragAndDrop) {
+    public LibGdxRenderingEntity(OrthographicCamera camera, Stage stage, DragAndDrop dragAndDrop) {
         this.camera = camera;
         this.stage = stage;
-        this.world = world;
         this.dragAndDrop = dragAndDrop;
     }
 
@@ -30,10 +27,6 @@ public class CampusMap {
 
     public OrthographicCamera getCamera() {
         return camera;
-    }
-
-    public World getWorld() {
-        return world;
     }
 
     public DragAndDrop getDragAndDrop() {
@@ -48,8 +41,13 @@ public class CampusMap {
         return lastTouchY;
     }
 
+    /**
+     * While in the process of dragging an item, every time the element is successfully re-drawn, this is called.
+     * @param x
+     * @param y
+     */
     public void setLastTouch(int x, int y) {
         lastTouchX = x;
         lastTouchY = y;
-    }
+    } 
 }
