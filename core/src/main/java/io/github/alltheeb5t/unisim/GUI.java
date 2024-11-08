@@ -67,21 +67,23 @@ public class GUI {
         stage = new Stage(new ScreenViewport());
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
 
+        // Creates the buttonTable and positions it in the bottom middle
         buttonTable = new Table();
         buttonTable.setWidth(stage.getWidth());
         buttonTable.align(Align.center|Align.bottom);
+        buttonTable.setPosition(0, 0);
 
+        // Creates the statTable and positions it in the top right
         statTable = new Table();
         statTable.setWidth(stage.getWidth());
         statTable.align(Align.right|Align.top);
-
-        buttonTable.setPosition(0, 0);
         statTable.setPosition(0, Gdx.graphics.getHeight());
-
+        
         ImageButtonStyle style = new ImageButtonStyle();
         style.imageUp = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("building_button.png"))));
         style.imageDown = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("building_button_pressed.png"))));
 
+        // ─── Creating items to display ────────────────────────
         cateringLabel = new Label("Catering", skin);
         accomLabel = new Label("Accomodation", skin);
         studyLabel = new Label("Study", skin);
@@ -103,6 +105,7 @@ public class GUI {
         satisfaction = new Label(satisfactionText, skin);
         satisfaction.setFontScale(2);
 
+        // ─── Adding functionality to the buttons ────────────────────────
         cateringButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -144,6 +147,7 @@ public class GUI {
             }
         });
 
+        // ─── Formatting the buttonTable ────────────────────────
         buttonTable.add(cateringLabel);
         buttonTable.add(accomLabel);
         buttonTable.add(studyLabel);
@@ -159,6 +163,7 @@ public class GUI {
         buttonTable.add(studyCounter);
         buttonTable.add(funCounter);
 
+        // ─── Formatting the statTable ────────────────────────
         statTable.padTop(5);
         statTable.add(satisfaction).padRight(20);
         statTable.add(timer).padRight(10);
@@ -193,6 +198,7 @@ public class GUI {
         stage.draw();
     }
 
+    // Ensures the tables stay in place if the resolution changes
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
         buttonTable.setWidth(width);
