@@ -1,6 +1,6 @@
 # UniSim
 
-Part of the ENG1 Assessment 1 deliverable for alltheeb5t (Cohort 3 Group 5).
+Part of the ENG1 Assessment 1 deliverables for alltheeb5t (Cohort 3 Group 5).
 
 Contains the latest build of UniSim, licenced under Apache 2.0.
 
