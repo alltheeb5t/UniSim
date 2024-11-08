@@ -101,6 +101,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
     public void resize(int width, int height) {
         MapInputSystem.gameScreenResize(width, height, libGdxRenderingEntity);
+        gui.resize(width, height);
     }
     
     @Override

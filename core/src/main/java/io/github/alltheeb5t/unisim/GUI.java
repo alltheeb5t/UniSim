@@ -45,8 +45,8 @@ public class GUI {
         table.setPosition(0, 0);
 
         ImageButtonStyle style = new ImageButtonStyle();
-        style.imageUp = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("test_button.png"))));
-        style.imageDown = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("test_button_pressed.png"))));
+        style.imageUp = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("building_button.png"))));
+        style.imageDown = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("building_button_pressed.png"))));
 
         cateringButton = new ImageButton(style);
         accomButton = new ImageButton(style);
@@ -72,5 +72,10 @@ public class GUI {
 
     public void render() {
         stage.draw();
+    }
+
+    public void resize(int width, int height) {
+        stage.getViewport().update(width, height, true);
+        table.setWidth(width);
     }
 }
