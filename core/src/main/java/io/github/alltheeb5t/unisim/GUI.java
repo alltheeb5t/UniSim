@@ -1,5 +1,6 @@
 package io.github.alltheeb5t.unisim;
 
+import java.text.DecimalFormat;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -31,20 +32,26 @@ public class GUI {
     }
     private Skin skin;
 
+    private static final DecimalFormat df = new DecimalFormat("0.00");
+
     private Table buttonTable;
     private Table statTable;
+
     private Label cateringLabel;
     private Label accomLabel;
     private Label studyLabel;
     private Label funLabel;
+
     private ImageButton cateringButton;
     private ImageButton accomButton;
     private ImageButton studyButton;
     private ImageButton funButton;
+
     private Label cateringCounter;
     private Label accomCounter;
     private Label studyCounter;
     private Label funCounter;
+
     private String caterNum = String.valueOf(BuildingSystem.getBuildingCount(StructureTypeComponent.CATERING, GameScreen.getBuildings()));
     private String accomNum = String.valueOf(BuildingSystem.getBuildingCount(StructureTypeComponent.ACCOMMODATION, GameScreen.getBuildings()));
     private String studyNum = String.valueOf(BuildingSystem.getBuildingCount(StructureTypeComponent.STUDY, GameScreen.getBuildings()));
@@ -52,8 +59,9 @@ public class GUI {
 
     private Label timer;
     private Label satisfaction;
+
     private String timerText = GameTimerSystem.timeDisplay(GameScreen.getGameTimer());
-    private String satisfactionText = String.valueOf(SatisfactionSystem.getAverageSatisfaction(CampusMapEntity.getSatisfactionComponents()));
+    private String satisfactionText = String.valueOf(df.format(SatisfactionSystem.getAverageSatisfaction(CampusMapEntity.getSatisfactionComponents())));
 
     public GUI() {
         stage = new Stage(new ScreenViewport());
@@ -78,10 +86,12 @@ public class GUI {
         accomLabel = new Label("Accomodation", skin);
         studyLabel = new Label("Study", skin);
         funLabel = new Label("Recreation", skin);
+
         cateringButton = new ImageButton(style);
         accomButton = new ImageButton(style);
         studyButton = new ImageButton(style);
         funButton = new ImageButton(style);
+
         cateringCounter = new Label(caterNum, skin);
         accomCounter = new Label(accomNum, skin);
         studyCounter = new Label(studyNum, skin);
@@ -89,6 +99,7 @@ public class GUI {
 
         timer = new Label(timerText, skin);
         timer.setFontScale(2);
+
         satisfaction = new Label(satisfactionText, skin);
         satisfaction.setFontScale(2);
 
@@ -161,19 +172,24 @@ public class GUI {
         accomNum = String.valueOf(BuildingSystem.getBuildingCount(StructureTypeComponent.ACCOMMODATION, GameScreen.getBuildings()));
         studyNum = String.valueOf(BuildingSystem.getBuildingCount(StructureTypeComponent.STUDY, GameScreen.getBuildings()));
         funNum = String.valueOf(BuildingSystem.getBuildingCount(StructureTypeComponent.ENTERTAINMENT, GameScreen.getBuildings()));
+
         cateringCounter.setText(caterNum);
         accomCounter.setText(accomNum);
         studyCounter.setText(studyNum);
         funCounter.setText(funNum);
+
         timerText = GameTimerSystem.timeDisplay(GameScreen.getGameTimer());
-        satisfactionText = String.valueOf(SatisfactionSystem.getAverageSatisfaction(CampusMapEntity.getSatisfactionComponents()));
+        satisfactionText = String.valueOf(df.format(SatisfactionSystem.getAverageSatisfaction(CampusMapEntity.getSatisfactionComponents())));
+
         if (Float.valueOf(satisfactionText) < 50) {
             satisfaction.setColor(255, 0, 0, 255);
         } else {
             satisfaction.setColor(255, 255, 255, 255);
         }
+
         timer.setText(timerText);
         satisfaction.setText(satisfactionText);
+        
         stage.draw();
     }
 
