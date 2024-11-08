@@ -16,12 +16,10 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 import io.github.alltheeb5t.unisim.entities.GameTimerEntity;
 import io.github.alltheeb5t.unisim.systems.GameTimerSystem;
-import io.github.alltheeb5t.unisim.building_components.StructureTypeComponent;
 import io.github.alltheeb5t.unisim.entities.BuildingEntity;
 import io.github.alltheeb5t.unisim.entities.CampusMapEntity;
 import io.github.alltheeb5t.unisim.entities.LibGdxRenderingEntity;
 import io.github.alltheeb5t.unisim.entities.MapObstacleEntity;
-import io.github.alltheeb5t.unisim.factories.BuildingFactory;
 import io.github.alltheeb5t.unisim.factories.ObstaclesFactory;
 import io.github.alltheeb5t.unisim.systems.CampusMapSystem;
 import io.github.alltheeb5t.unisim.systems.MapInputSystem;
@@ -47,7 +45,10 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             return buildings;
     }
 
-    private GameTimerEntity gameTimer;
+    private static GameTimerEntity gameTimer;
+    public static GameTimerEntity getGameTimer() {
+        return gameTimer;
+    }
 
     private List<MapObstacleEntity> obstacles = new LinkedList<>();
 

@@ -15,34 +15,34 @@ import io.github.alltheeb5t.unisim.building_components.SatisfactionComponent;
  */
 public class CampusMapEntity {
     private List<BoundingBoxComponent> existingStructureBounds = new LinkedList<>();
-    private List<SatisfactionComponent> satisfactionComponents = new LinkedList<>();
-    private List<Image> imagesObjects = new LinkedList<>();
-    private static MapBoundaryComponent mapBoundaryComponent = new MapBoundaryComponent(2000, 900);
+    private static List<SatisfactionComponent> satisfactionComponents = new LinkedList<>();
+        private List<Image> imagesObjects = new LinkedList<>();
+        private static MapBoundaryComponent mapBoundaryComponent = new MapBoundaryComponent(2000, 900);
+        
+        public void addStructureBoundingBox(BoundingBoxComponent boundingBox) {
+            existingStructureBounds.add(boundingBox);
+        }
     
-    public void addStructureBoundingBox(BoundingBoxComponent boundingBox) {
-        existingStructureBounds.add(boundingBox);
-    }
-
-    public void addSatisfactionComponent(SatisfactionComponent satisfactionComponent) {
-        satisfactionComponents.add(satisfactionComponent);
-    }
-
-    /**
-     * Every building and obstructions's bounding box. They are anonymized from the images
-     * they relate to
-     * @return
-     */
-    public List<BoundingBoxComponent> getStructureBounds() {
-        return existingStructureBounds;
-    }
-
-    /**
-     * Every building's individual satisfaction component is included in this list.
-     * The SatisfactionComponents are anonymized from their buildings though now.
-     * @return
-     */
-    public List<SatisfactionComponent> getSatisfactionComponents() {
-        return satisfactionComponents;
+        public void addSatisfactionComponent(SatisfactionComponent satisfactionComponent) {
+            satisfactionComponents.add(satisfactionComponent);
+        }
+    
+        /**
+         * Every building and obstructions's bounding box. They are anonymized from the images
+         * they relate to
+         * @return
+         */
+        public List<BoundingBoxComponent> getStructureBounds() {
+            return existingStructureBounds;
+        }
+    
+        /**
+         * Every building's individual satisfaction component is included in this list.
+         * The SatisfactionComponents are anonymized from their buildings though now.
+         * @return
+         */
+        public static List<SatisfactionComponent> getSatisfactionComponents() {
+            return satisfactionComponents;
     }
 
     /**
