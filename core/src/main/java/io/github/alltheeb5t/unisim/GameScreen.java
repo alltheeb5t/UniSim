@@ -28,10 +28,18 @@ import io.github.alltheeb5t.unisim.systems.SatisfactionSystem;
 public class GameScreen extends ScreenAdapter implements InputProcessor {
 
     private SpriteBatch batch;
-    private LibGdxRenderingEntity libGdxRenderingEntity;
+    private static LibGdxRenderingEntity libGdxRenderingEntity;
+        public static LibGdxRenderingEntity getLibGdxRenderingEntity() {
+            return libGdxRenderingEntity;
+    }
+
     private GUI gui;
 
-    private CampusMapEntity campusMap;
+    private static CampusMapEntity campusMap;
+    public static CampusMapEntity getCampusMap() {
+        return campusMap;
+    }
+
     private static List<BuildingEntity> buildings = new LinkedList<>();
         public static List<BuildingEntity> getBuildings() {
             return buildings;
@@ -61,18 +69,6 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         obstacles.addAll(ObstaclesFactory.makeMapMountain(1785, 850, libGdxRenderingEntity));
 
         CampusMapSystem.addAllObstaclesToMap(campusMap, obstacles);
-
-        BuildingEntity newBuildingEntity = BuildingFactory.makeMapBuilding(1230, 100, StructureTypeComponent.ACCOMMODATION);
-        CampusMapSystem.addBuildingToMap(campusMap, newBuildingEntity.getBoundingBoxComponent(), newBuildingEntity.getImageComponent(), newBuildingEntity.getSatisfactionComponent());
-        libGdxRenderingEntity.getStage().addActor(newBuildingEntity.getImageComponent());
-        MapInputSystem.registerDraggableObstruction(libGdxRenderingEntity, newBuildingEntity, campusMap);
-
-        BuildingEntity newBuildingEntity2 = BuildingFactory.makeMapBuilding(870, 100, StructureTypeComponent.CATERING);
-        CampusMapSystem.addBuildingToMap(campusMap, newBuildingEntity2.getBoundingBoxComponent(), newBuildingEntity2.getImageComponent(), newBuildingEntity2.getSatisfactionComponent());
-        libGdxRenderingEntity.getStage().addActor(newBuildingEntity2.getImageComponent());
-        MapInputSystem.registerDraggableObstruction(libGdxRenderingEntity, newBuildingEntity2, campusMap);
-
-
 
         Gdx.input.setInputProcessor(new InputMultiplexer(gui.getStage(), this)); // Inputs related to drag are manually passed to stage
     }
