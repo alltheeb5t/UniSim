@@ -25,9 +25,7 @@ public class MapInputSystem {
 				payload.setDragActor(getActor());
                 libGdxRenderingEntity.getStage().addActor(buildingEntity.getImageComponent());
                 buildingEntity.getImageComponent().toFront(); // Ensures that entity being dragged around is always rendered above others
-				libGdxRenderingEntity.getDragAndDrop().setDragActorPosition(getActor().getWidth() / 2, -getActor().getHeight() / 2); // Move image so the cursor is in the centre of the object during dragging
-
-                BuildingSystem.updatePlacementPosition(buildingEntity);
+                libGdxRenderingEntity.getDragAndDrop().setDragActorPosition(getActor().getWidth() / 2, -getActor().getHeight() / 2); // Move image so the cursor is in the centre of the object during dragging
 
 				return payload;
 			}
