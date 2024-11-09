@@ -4,7 +4,8 @@ package io.github.alltheeb5t.unisim.building_components;
  * Stores an X and Y coordinate representing the position where an element was last placed.
  */
 public class PlacementComponent {
-    private float positionX, positionY = -1;
+    private float positionX = -1;
+    private float positionY = -1;
 
     public void setPosition(float x, float y) {
         positionX = x;
