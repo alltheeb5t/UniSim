@@ -64,6 +64,8 @@ public class GUI {
     private String funNum = String.valueOf(BuildingSystem.getBuildingCount(StructureTypeComponent.ENTERTAINMENT, GameScreen.getBuildings()));
     private DragAndDrop dragAndDrop;
 
+    private Label timerLabel;
+    private Label satisfactionLabel;
     private Label timer;
     private Label satisfaction;
 
@@ -167,6 +169,9 @@ public class GUI {
         buttonTable.add(studyCounter);
         buttonTable.add(funCounter);
 
+        timerLabel = new Label("Time:", skin);
+        satisfactionLabel = new Label("Satisfaction:", skin);
+
         timer = new Label(timerText, skin);
         timer.setFontScale(2);
 
@@ -175,6 +180,9 @@ public class GUI {
 
         // ─── Formatting the statTable ────────────────────────
         statTable.padTop(5);
+        statTable.add(satisfactionLabel).padRight(20);
+        statTable.add(timerLabel).padRight(10);
+        statTable.row();
         statTable.add(satisfaction).padRight(20);
         statTable.add(timer).padRight(10);
 
