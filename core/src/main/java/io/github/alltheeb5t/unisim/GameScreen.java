@@ -57,6 +57,8 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
         gameTimer = new GameTimerEntity();
 
+        GameTimerSystem.toggleTimer(gameTimer);
+
         libGdxRenderingEntity = new LibGdxRenderingEntity(camera, new Stage(viewport), new DragAndDrop());
         campusMap = new CampusMapEntity();
 

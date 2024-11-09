@@ -24,7 +24,6 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.alltheeb5t.unisim.building_components.StructureTypeComponent;
 import io.github.alltheeb5t.unisim.entities.BuildingEntity;
 import io.github.alltheeb5t.unisim.entities.CampusMapEntity;
-import io.github.alltheeb5t.unisim.entities.LibGdxRenderingEntity;
 import io.github.alltheeb5t.unisim.factories.BuildingFactory;
 import io.github.alltheeb5t.unisim.systems.BuildingSystem;
 import io.github.alltheeb5t.unisim.systems.CampusMapSystem;
@@ -68,6 +67,9 @@ public class GUI {
     private Label timer;
     private Label satisfaction;
 
+    private Image tutorial;
+    private Image overlay;
+
     private String timerText = GameTimerSystem.timeDisplay(GameScreen.getGameTimer());
     private String satisfactionText = String.valueOf(df.format(SatisfactionSystem.getAverageSatisfaction(CampusMapEntity.getSatisfactionComponents())));
 
@@ -87,12 +89,12 @@ public class GUI {
         statTable.setWidth(stage.getWidth());
         statTable.align(Align.right|Align.top);
         statTable.setPosition(0, Gdx.graphics.getHeight());
-        
+   
+        // ─── Adding functionality to the buttons ────────────────────────
         ImageButtonStyle style = new ImageButtonStyle();
         style.imageUp = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("building_button.png"))));
         style.imageDown = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("building_button_pressed.png"))));
 
-        // ─── Adding functionality to the buttons ────────────────────────
         cateringButton = new Stack();
         cateringButton.add(new ImageButton(style));
         registerButtonDraggable(cateringButton, StructureTypeComponent.CATERING);
@@ -120,6 +122,34 @@ public class GUI {
         accomCounter = new Label(accomNum, skin);
         studyCounter = new Label(studyNum, skin);
         funCounter = new Label(funNum, skin);
+
+        tutorial = new Image(new TextureRegion(new Texture(Gdx.files.internal("tutorial.png"))));
+        tutorial.setScale((float) 0.5);
+        tutorial.setPosition(((Gdx.graphics.getWidth() / 2) - tutorial.getWidth() / 4), ((Gdx.graphics.getHeight() / 2) - tutorial.getHeight() / 4));
+
+        overlay = new Image(new TextureRegion(new Texture(Gdx.files.internal("dark_overlay.png"))));
+        overlay.setWidth(Gdx.graphics.getWidth());
+        overlay.setHeight(Gdx.graphics.getHeight());
+        overlay.setPosition(0, 0);
+
+
+        tutorial.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                tutorial.remove();
+                overlay.remove();
+                GameTimerSystem.toggleTimer(GameScreen.getGameTimer());
+            }
+        });
+
+        overlay.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                tutorial.remove();
+                overlay.remove();
+                GameTimerSystem.toggleTimer(GameScreen.getGameTimer());
+            }
+        });
 
         // ─── Formatting the buttonTable ────────────────────────
         buttonTable.add(cateringLabel);
@@ -151,6 +181,8 @@ public class GUI {
         
         stage.addActor(buttonTable);
         stage.addActor(statTable);
+        stage.addActor(overlay);
+        stage.addActor(tutorial);
     }
 
     public void render() {
@@ -186,6 +218,10 @@ public class GUI {
         statTable.setHeight(0);
         statTable.setWidth(width);
         statTable.setPosition(0, Gdx.graphics.getHeight());
+        tutorial.setPosition(((Gdx.graphics.getWidth() / 2) - tutorial.getWidth() / 4), ((Gdx.graphics.getHeight() / 2) - tutorial.getHeight() / 4));
+        overlay.setWidth(Gdx.graphics.getWidth());
+        overlay.setHeight(Gdx.graphics.getHeight());
+        overlay.setPosition(0, 0);
     }
 
     /**
