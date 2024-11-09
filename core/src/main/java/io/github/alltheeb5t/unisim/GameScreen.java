@@ -14,12 +14,12 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-import io.github.alltheeb5t.unisim.building_components.StructureTypeComponent;
+import io.github.alltheeb5t.unisim.entities.GameTimerEntity;
+import io.github.alltheeb5t.unisim.systems.GameTimerSystem;
 import io.github.alltheeb5t.unisim.entities.BuildingEntity;
 import io.github.alltheeb5t.unisim.entities.CampusMapEntity;
 import io.github.alltheeb5t.unisim.entities.LibGdxRenderingEntity;
 import io.github.alltheeb5t.unisim.entities.MapObstacleEntity;
-import io.github.alltheeb5t.unisim.factories.BuildingFactory;
 import io.github.alltheeb5t.unisim.factories.ObstaclesFactory;
 import io.github.alltheeb5t.unisim.systems.CampusMapSystem;
 import io.github.alltheeb5t.unisim.systems.MapInputSystem;
@@ -45,13 +45,21 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             return buildings;
     }
 
+    private static GameTimerEntity gameTimer;
+    public static GameTimerEntity getGameTimer() {
+        return gameTimer;
+    }
+
     private List<MapObstacleEntity> obstacles = new LinkedList<>();
 
     public GameScreen (OrthographicCamera camera, Viewport viewport) {
         batch = new SpriteBatch();
 
+        gameTimer = new GameTimerEntity();
+
         libGdxRenderingEntity = new LibGdxRenderingEntity(camera, new Stage(viewport), new DragAndDrop());
         campusMap = new CampusMapEntity();
+
 
         gui = new GUI();
 
@@ -70,6 +78,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
         CampusMapSystem.addAllObstaclesToMap(campusMap, obstacles);
 
+
         Gdx.input.setInputProcessor(new InputMultiplexer(gui.getStage(), this)); // Inputs related to drag are manually passed to stage
     }
 
@@ -84,6 +93,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         // This is where we would render any static objects
         batch.end();
 
+        GameTimerSystem.tick(delta, gameTimer);
         libGdxRenderingEntity.getStage().draw();
 
         // Recalculating satisfaction on every frame is incredibly inefficient. Should really do it on drag end event
