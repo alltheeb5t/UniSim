@@ -80,7 +80,6 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
         CampusMapSystem.addAllObstaclesToMap(campusMap, obstacles);
 
-
         Gdx.input.setInputProcessor(new InputMultiplexer(gui.getStage(), this)); // Inputs related to drag are manually passed to stage
     }
 
