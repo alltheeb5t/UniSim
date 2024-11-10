@@ -25,8 +25,11 @@ public class SatisfactionSystem {
         for (int i = 0; i < satisfaction_objects.size(); i++) {
             total += satisfaction_objects.get(i).getLastCalculatedSatisfaction();
         }
-
+        if (satisfaction_objects.size() == 0) {
+            return 0;
+        } else {
         return total / satisfaction_objects.size();
+        }
     }
 
     /**

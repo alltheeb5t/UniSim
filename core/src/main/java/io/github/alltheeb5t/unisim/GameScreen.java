@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
@@ -15,12 +16,10 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 import io.github.alltheeb5t.unisim.entities.GameTimerEntity;
 import io.github.alltheeb5t.unisim.systems.GameTimerSystem;
-import io.github.alltheeb5t.unisim.building_components.StructureTypeComponent;
 import io.github.alltheeb5t.unisim.entities.BuildingEntity;
 import io.github.alltheeb5t.unisim.entities.CampusMapEntity;
 import io.github.alltheeb5t.unisim.entities.LibGdxRenderingEntity;
 import io.github.alltheeb5t.unisim.entities.MapObstacleEntity;
-import io.github.alltheeb5t.unisim.factories.BuildingFactory;
 import io.github.alltheeb5t.unisim.factories.ObstaclesFactory;
 import io.github.alltheeb5t.unisim.systems.CampusMapSystem;
 import io.github.alltheeb5t.unisim.systems.MapInputSystem;
@@ -29,11 +28,28 @@ import io.github.alltheeb5t.unisim.systems.SatisfactionSystem;
 public class GameScreen extends ScreenAdapter implements InputProcessor {
 
     private SpriteBatch batch;
-    private LibGdxRenderingEntity libGdxRenderingEntity;
+    private static LibGdxRenderingEntity libGdxRenderingEntity;
+        public static LibGdxRenderingEntity getLibGdxRenderingEntity() {
+            return libGdxRenderingEntity;
+    }
 
-    private GameTimerEntity gameTimer;
-    private CampusMapEntity campusMap;
-    private List<BuildingEntity> buildings = new LinkedList<>();
+    private GUI gui;
+
+    private static CampusMapEntity campusMap;
+    public static CampusMapEntity getCampusMap() {
+        return campusMap;
+    }
+
+    private static List<BuildingEntity> buildings = new LinkedList<>();
+        public static List<BuildingEntity> getBuildings() {
+            return buildings;
+    }
+
+    private static GameTimerEntity gameTimer;
+    public static GameTimerEntity getGameTimer() {
+        return gameTimer;
+    }
+
     private List<MapObstacleEntity> obstacles = new LinkedList<>();
 
     public GameScreen (OrthographicCamera camera, Viewport viewport) {
@@ -41,8 +57,13 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
         gameTimer = new GameTimerEntity();
 
+        GameTimerSystem.toggleTimer(gameTimer);
+
         libGdxRenderingEntity = new LibGdxRenderingEntity(camera, new Stage(viewport), new DragAndDrop());
         campusMap = new CampusMapEntity();
+
+
+        gui = new GUI();
 
         obstacles.addAll(ObstaclesFactory.makeMapOrchard(475,200, libGdxRenderingEntity));
         obstacles.addAll(ObstaclesFactory.makeMapOrchard(100,750, libGdxRenderingEntity));
@@ -59,18 +80,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
         CampusMapSystem.addAllObstaclesToMap(campusMap, obstacles);
 
-        BuildingEntity newBuildingEntity = BuildingFactory.makeMapBuilding(1230, 100, StructureTypeComponent.ACCOMMODATION);
-        CampusMapSystem.addBuildingToMap(campusMap, newBuildingEntity.getBoundingBoxComponent(), newBuildingEntity.getImageComponent(), newBuildingEntity.getSatisfactionComponent());
-        libGdxRenderingEntity.getStage().addActor(newBuildingEntity.getImageComponent());
-        MapInputSystem.registerDraggableObstruction(libGdxRenderingEntity, newBuildingEntity, campusMap);
-
-        BuildingEntity newBuildingEntity2 = BuildingFactory.makeMapBuilding(870, 100, StructureTypeComponent.CATERING);
-        CampusMapSystem.addBuildingToMap(campusMap, newBuildingEntity2.getBoundingBoxComponent(), newBuildingEntity2.getImageComponent(), newBuildingEntity2.getSatisfactionComponent());
-        libGdxRenderingEntity.getStage().addActor(newBuildingEntity2.getImageComponent());
-        MapInputSystem.registerDraggableObstruction(libGdxRenderingEntity, newBuildingEntity2, campusMap);
-
-        Gdx.input.setInputProcessor(this); // Inputs related to drag are manually passed to stage
-        
+        Gdx.input.setInputProcessor(new InputMultiplexer(gui.getStage(), this)); // Inputs related to drag are manually passed to stage
     }
 
     @Override
@@ -90,12 +100,15 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         // Recalculating satisfaction on every frame is incredibly inefficient. Should really do it on drag end event
         SatisfactionSystem.recalculateBuildingSatisfaction(buildings);
 
+        gui.render();
+
     }
 
     // ─── Map Pan And Zoom ────────────────────────────────────────────────
 
     public void resize(int width, int height) {
         MapInputSystem.gameScreenResize(width, height, libGdxRenderingEntity);
+        gui.resize(width, height);
     }
     
     @Override

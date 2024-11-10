@@ -30,12 +30,12 @@ public class ObstaclesFactory {
             float positionX = rand.nextInt(50) + x - 25;
             float positionY = rand.nextInt(80) + y - 40;
 
-            Image nextTreeTopImage = ImageComponentFactory.makeImageComponent(positionX, positionY, 5, new Texture("assets/MapObstacles/tree_square.png"));
+            Image nextTreeTopImage = ImageComponentFactory.makeImageComponent(positionX, positionY, 5, new Texture("MapObstacles/tree_square.png"));
             BoundingBoxComponent nextTreeTopBoundingBox = BoundingBoxComponentFactory.makeBoundingBoxComponent(nextTreeTopImage);
             libGdxRenderingEntity.getStage().addActor(nextTreeTopImage);
             orchard.add(new MapObstacleEntity(nextTreeTopBoundingBox, nextTreeTopImage));
 
-            Image nextTreeTrunkImage = ImageComponentFactory.makeImageComponent(positionX, positionY -2.5f, 1, 2, new Texture("assets/MapObstacles/tree_trunk_square.png"));
+            Image nextTreeTrunkImage = ImageComponentFactory.makeImageComponent(positionX, positionY -2.5f, 1, 2, new Texture("MapObstacles/tree_trunk_square.png"));
             BoundingBoxComponent nextTreeTrunkBoundingBox = BoundingBoxComponentFactory.makeBoundingBoxComponent(nextTreeTrunkImage);
             libGdxRenderingEntity.getStage().addActor(nextTreeTrunkImage);
             orchard.add(new MapObstacleEntity(nextTreeTrunkBoundingBox, nextTreeTrunkImage));
@@ -53,7 +53,7 @@ public class ObstaclesFactory {
      */
     public static MapObstacleEntity makeMapRoad(float x, float y, LibGdxRenderingEntity libGdxRenderingEntity) { 
         
-        Image roadImage = ImageComponentFactory.makeImageComponent(x, y, 15, 2000, new Texture("assets/MapObstacles/road_square.png"));
+        Image roadImage = ImageComponentFactory.makeImageComponent(x, y, 15, 2000, new Texture("MapObstacles/road_square.png"));
         BoundingBoxComponent roadBoundingBoxComponent = BoundingBoxComponentFactory.makeBoundingBoxComponent(roadImage);
         libGdxRenderingEntity.getStage().addActor(roadImage);
         return new MapObstacleEntity(roadBoundingBoxComponent, roadImage);
@@ -77,7 +77,7 @@ public class ObstaclesFactory {
         for (int row = 0; row < 30; row++) { //30 rows is arbitrary. determines size of the lake
             for (int col = 0; col < rowNumSquares; col++) {
                 newX += 10;
-                Image nextLakeImage = ImageComponentFactory.makeImageComponent(newX, newY, 10, 5, new Texture("assets/MapObstacles/lake_square.png"));
+                Image nextLakeImage = ImageComponentFactory.makeImageComponent(newX, newY, 10, 5, new Texture("MapObstacles/lake_square.png"));
                 BoundingBoxComponent nextLakeBoundingBoxComponent = BoundingBoxComponentFactory.makeBoundingBoxComponent(nextLakeImage);
                 libGdxRenderingEntity.getStage().addActor(nextLakeImage);
                 lake.add(new MapObstacleEntity(nextLakeBoundingBoxComponent, nextLakeImage));
@@ -122,10 +122,10 @@ public class ObstaclesFactory {
             Image nextLevelImage;
 
             if  (row < 6) { //first 6 rows are snow on top of the mountain.
-                nextLevelImage = ImageComponentFactory.makeImageComponent(x, newY, width, 5, new Texture("assets/MapObstacles/mountain_peak_square.png"));
+                nextLevelImage = ImageComponentFactory.makeImageComponent(x, newY, width, 5, new Texture("MapObstacles/mountain_peak_square.png"));
             }
             else {
-                nextLevelImage = ImageComponentFactory.makeImageComponent(x, newY, width, 5, new Texture("assets/MapObstacles/mountain_square.png"));
+                nextLevelImage = ImageComponentFactory.makeImageComponent(x, newY, width, 5, new Texture("MapObstacles/mountain_square.png"));
             }
 
             BoundingBoxComponent nextLevelBoundingBoxComponent = BoundingBoxComponentFactory.makeBoundingBoxComponent(nextLevelImage);
@@ -146,7 +146,7 @@ public class ObstaclesFactory {
      */
     public static MapObstacleEntity makeMapRiver(float x, float y, LibGdxRenderingEntity libGdxRenderingEntity) {
 
-        Image riverImage = ImageComponentFactory.makeImageComponent(x, y, 10, 800, new Texture("assets/MapObstacles/lake_square.png"));
+        Image riverImage = ImageComponentFactory.makeImageComponent(x, y, 10, 800, new Texture("MapObstacles/lake_square.png"));
         BoundingBoxComponent riverBoundingBoxComponent = BoundingBoxComponentFactory.makeBoundingBoxComponent(riverImage);
         libGdxRenderingEntity.getStage().addActor(riverImage);
         return new MapObstacleEntity(riverBoundingBoxComponent, riverImage);
@@ -160,7 +160,7 @@ public class ObstaclesFactory {
      * @return
      */
     public static MapObstacleEntity makeMapBridge(float x, float y, LibGdxRenderingEntity libGdxRenderingEntity) {
-        Image bridgeImage = ImageComponentFactory.makeImageComponent(x, y, 20, 5, new Texture("assets/MapObstacles/tree_trunk_square.png"));
+        Image bridgeImage = ImageComponentFactory.makeImageComponent(x, y, 20, 5, new Texture("MapObstacles/tree_trunk_square.png"));
         BoundingBoxComponent bridgeBoundingBoxComponent = BoundingBoxComponentFactory.makeBoundingBoxComponent(bridgeImage);
         libGdxRenderingEntity.getStage().addActor(bridgeImage);
         return new MapObstacleEntity(bridgeBoundingBoxComponent, bridgeImage);

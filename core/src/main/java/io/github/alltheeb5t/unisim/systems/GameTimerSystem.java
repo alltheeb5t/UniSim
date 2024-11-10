@@ -1,5 +1,7 @@
 package io.github.alltheeb5t.unisim.systems;
 
+import com.badlogic.gdx.Gdx;
+
 import io.github.alltheeb5t.unisim.building_components.GameTimerComponent;
 import io.github.alltheeb5t.unisim.entities.GameTimerEntity;
 
@@ -14,13 +16,16 @@ public class GameTimerSystem {
      * @param addedTime
      */
     public static void tick(float addedTime, GameTimerEntity gameTimer) {
+        GameTimerComponent timePassed = gameTimer.getGameTimerRecord();
+
         if (!gameTimer.getPaused()) {            
-            GameTimerComponent timePassed = gameTimer.getGameTimerRecord();
             timePassed.setElapsedTime(timePassed.getElapsedTime() + addedTime);
-            System.out.println(timeDisplay(gameTimer));
         }
 
-        // TODO - This is where a game end event would be fired.
+        if(timePassed.getElapsedTime() >= 300) {
+            Gdx.app.exit();
+            System.exit(-1);
+        }
     }
 
     /**
